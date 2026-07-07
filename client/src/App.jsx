@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastProvider } from '@/hooks/useToast';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import Dashboard from '@/pages/Dashboard';
@@ -16,6 +16,7 @@ import Resources from '@/pages/Resources';
 import Guide from '@/pages/Guide';
 import LoginPage from '@/pages/LoginPage';
 import RegisterPage from '@/pages/RegisterPage';
+import Landing from '@/pages/Landing';
 import Users from '@/pages/Users';
 import AuditLog from '@/pages/AuditLog';
 import ProtectedRoute from '@/routes/ProtectedRoute';
@@ -30,6 +31,8 @@ export default function App() {
     <AuthProvider>
       <ToastProvider>
         <Routes>
+          <Route path="/"         element={<Landing />} />
+          <Route path="/landing"  element={<Navigate to="/" replace />} />
           <Route path="/login"    element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
@@ -39,7 +42,7 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="projects"  element={<Projects />} />
             <Route path="context"   element={<Context />} />
             <Route path="risks"     element={<Risks />} />

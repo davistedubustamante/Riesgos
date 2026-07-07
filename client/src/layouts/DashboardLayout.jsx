@@ -20,7 +20,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const nav = [
-  { to: '/',             label: 'Dashboard',          icon: LayoutDashboard, end: true },
+  { to: '/dashboard',     label: 'Dashboard',          icon: LayoutDashboard, end: true },
   { to: '/projects',     label: 'Proyectos',          icon: FolderKanban },
   { to: '/context',      label: 'Contexto ISO 31000', icon: FileText },
   { to: '/risks',        label: 'Riesgos',            icon: AlertTriangle },
@@ -69,7 +69,7 @@ export default function DashboardLayout() {
         {/* Logo block */}
         <div className="px-5 py-5 border-b border-white/[0.06]">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="flex items-center gap-2.5 group w-full text-left"
           >
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
@@ -146,7 +146,7 @@ export default function DashboardLayout() {
               <select
                 className="filter-chip appearance-none pr-7"
                 value={activeProjectId || ''}
-                onChange={(e) => { setActiveProject(e.target.value); navigate('/'); }}
+                onChange={(e) => { setActiveProject(e.target.value); navigate('/dashboard'); }}
               >
                 {projects.map((p) => (
                   <option key={p.id} value={p.id} className="bg-[#0f172a] text-slate-100">

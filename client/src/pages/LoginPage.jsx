@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { useNavigate, useLocation, Navigate, Link } from 'react-router-dom';
 import { useAuth } from '@/store/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AlertCircle, LogIn, Flame, ArrowRight, Shield, Zap, BookOpen, Cpu } from 'lucide-react';
+import { AlertCircle, LogIn, Flame, ArrowRight, Shield, Zap, BookOpen, Cpu, Globe } from 'lucide-react';
 
 // ─── Methodology Pillars Data ───────────────────────────────
 const PILLARS = [
@@ -47,7 +47,7 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
 
   if (user) {
-    return <Navigate to={location.state?.from || '/'} replace />;
+    return <Navigate to={location.state?.from || '/dashboard'} replace />;
   }
 
   async function onSubmit(e) {
@@ -55,7 +55,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-      navigate(location.state?.from || '/', { replace: true });
+      navigate(location.state?.from || '/dashboard', { replace: true });
     } catch (_err) {} finally {
       setSubmitting(false);
     }
@@ -363,6 +363,20 @@ export default function LoginPage() {
               </span>
             </Button>
           </form>
+
+          {/* Ver landing page */}
+          <Link
+            to="/"
+            className="w-full h-11 mt-3 flex items-center justify-center gap-2.5 rounded-xl text-xs font-medium transition-all duration-200 border"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              borderColor: 'rgba(255,255,255,0.08)',
+              color: 'rgba(255,255,255,0.45)',
+            }}
+          >
+            <Globe size={13} style={{ color: '#06b6d4' }} />
+            Conocer RiskFlow — ver landing page
+          </Link>
 
           {/* Help text */}
           <p className="text-center text-xs mt-6" style={{ color: 'rgba(255,255,255,0.2)' }}>

@@ -22,7 +22,7 @@ export default function ProtectedRoute({ children, roles }) {
         <div className="card p-8 max-w-md text-center">
           <h2 className="text-xl font-bold mb-2">Permiso insuficiente</h2>
           <p className="text-sm text-ink-500">Tu rol ({user.role}) no permite acceder a esta página.</p>
-          <a href="/" className="btn-primary mt-4 inline-flex">Volver al dashboard</a>
+          <a href="/dashboard" className="btn-primary mt-4 inline-flex">Volver al dashboard</a>
         </div>
       </div>
     );

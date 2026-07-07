@@ -12,7 +12,7 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [submitting, setSubmitting] = useState(false);
 
-  if (user) return <Navigate to="/" replace />;
+  if (user) return <Navigate to="/dashboard" replace />;
 
   function up(k, v) { setForm((f) => ({ ...f, [k]: v })); }
 
@@ -21,7 +21,7 @@ export default function RegisterPage() {
     setSubmitting(true);
     try {
       await authRegister(form);
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (_err) {} finally {
       setSubmitting(false);
     }
