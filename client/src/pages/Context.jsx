@@ -5,7 +5,7 @@ import {
   Save, CheckCircle2, AlertCircle, ChevronRight, ChevronDown, ChevronUp,
   Layers, FolderDot, Target, BookOpen, Sparkles, X, Plus, Search,
   Globe, Scale, Box, ArrowRight, Clock, User, FileText, ShieldCheck,
-  Lightbulb, Check, Info, AlertTriangle, Circle
+  Lightbulb, Check, Info, AlertTriangle, Circle, Network, LayoutGrid
 } from 'lucide-react';
 import { api } from '@/services/api';
 import { useAppStore } from '@/store/useAppStore';
@@ -243,6 +243,7 @@ function FieldCard({ field, value, onChange, onSuggestion, copiedField }) {
 
 // ─── Context Map ──────────────────────────────────────────────────────────────
 function ContextMap({ projectName, formData, onNodeClick }) {
+  const [viewMode, setViewMode] = useState('network'); // 'network' | 'matrix'
   const [hoveredNode, setHoveredNode] = useState(null);
 
   const getItems = (val) => {
@@ -257,11 +258,11 @@ function ContextMap({ projectName, formData, onNodeClick }) {
   };
 
   const nodes = [
-    { id: 'proj', label: projectName || 'Proyecto', x: 50, y: 50, isCenter: true, color: '#06b6d4' },
-    { id: 'stk',  label: 'Stakeholders', x: 20, y: 25, color: '#3b82f6', count: getItems(formData?.stakeholders).length, items: getItems(formData?.stakeholders) },
-    { id: 'leg',  label: 'Factores Legales', x: 80, y: 25, color: '#f97316', count: getItems(formData?.legalFactors).length, items: getItems(formData?.legalFactors) },
-    { id: 'obj',  label: 'Objetivos', x: 20, y: 75, color: '#10b981', count: getItems(formData?.criticalObjectives).length, items: getItems(formData?.criticalObjectives) },
-    { id: 'ast',  label: 'Activos', x: 80, y: 75, color: '#8b5cf6', count: getItems(formData?.assets).length, items: getItems(formData?.assets) },
+    { id: 'proj', label: projectName || 'Proyecto', x: 50, y: 50, isCenter: true, color: '#06b6d4', icon: Globe },
+    { id: 'stk',  label: 'Stakeholders', x: 20, y: 25, color: '#3b82f6', count: getItems(formData?.stakeholders).length, items: getItems(formData?.stakeholders), icon: User },
+    { id: 'leg',  label: 'Factores Legales', x: 80, y: 25, color: '#f97316', count: getItems(formData?.legalFactors).length, items: getItems(formData?.legalFactors), icon: Scale },
+    { id: 'obj',  label: 'Objetivos', x: 20, y: 75, color: '#10b981', count: getItems(formData?.criticalObjectives).length, items: getItems(formData?.criticalObjectives), icon: Target },
+    { id: 'ast',  label: 'Activos', x: 80, y: 75, color: '#8b5cf6', count: getItems(formData?.assets).length, items: getItems(formData?.assets), icon: Box },
   ];
 
   const lines = [
@@ -271,105 +272,291 @@ function ContextMap({ projectName, formData, onNodeClick }) {
   const getNode = (id) => nodes.find(n => n.id === id);
 
   return (
-    <div className="bg-[#111420] border border-white/[0.06] rounded-xl p-4 shadow-md">
-      <div className="flex items-center justify-between mb-3 select-none">
-        <p className="text-[10px] uppercase font-bold text-[#8a8f98] tracking-widest">Mapa de Contexto Interactivo</p>
-        <span className="text-[8px] text-slate-500 font-mono">Haz clic en los nodos para editar</span>
+    <div className="bg-[#111420] border border-white/[0.06] rounded-xl p-4 shadow-md transition-all duration-300">
+      {/* Header Selector */}
+      <div className="flex items-center justify-between mb-4 select-none">
+        <div>
+          <p className="text-[10px] uppercase font-bold text-[#8a8f98] tracking-widest">Mapa de Contexto Interactivo</p>
+          <span className="text-[9px] text-[#4a4f5c] font-mono">
+            {viewMode === 'network' ? 'Haz clic en los nodos para editar · Hover para vista rápida' : 'Haz clic en cualquier tarjeta para editar'}
+          </span>
+        </div>
+        <div className="flex items-center gap-1 bg-[#0b0d18] border border-white/[0.06] rounded-lg p-0.5">
+          <button
+            type="button"
+            onClick={() => setViewMode('network')}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[9px] font-bold transition-all duration-200 cursor-pointer ${
+              viewMode === 'network'
+                ? 'bg-[#06b6d4]/15 text-[#06b6d4] border border-[#06b6d4]/20 shadow-[0_0_8px_rgba(6,182,212,0.15)]'
+                : 'text-[#8a8f98] hover:text-white border border-transparent'
+            }`}
+          >
+            <Network size={10} />
+            Red
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('matrix')}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[9px] font-bold transition-all duration-200 cursor-pointer ${
+              viewMode === 'matrix'
+                ? 'bg-[#06b6d4]/15 text-[#06b6d4] border border-[#06b6d4]/20 shadow-[0_0_8px_rgba(6,182,212,0.15)]'
+                : 'text-[#8a8f98] hover:text-white border border-transparent'
+            }`}
+          >
+            <LayoutGrid size={10} />
+            Tablero
+          </button>
+        </div>
       </div>
-      <div className="relative w-full aspect-video bg-[#0b0d18] rounded-xl overflow-hidden border border-white/[0.05]">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-          {lines.map(([a, b]) => {
-            const na = getNode(a); const nb = getNode(b);
-            return (
-              <line key={`${a}-${b}`} x1={na.x} y1={na.y} x2={nb.x} y2={nb.y}
-                stroke="#06b6d430" strokeWidth="0.4" strokeDasharray="1.5,1" />
-            );
-          })}
-          {nodes.map(n => (
-            <g key={n.id}
-              className={n.isCenter ? "" : "cursor-pointer group"}
-              onClick={() => !n.isCenter && onNodeClick && onNodeClick(n.id)}
-              onMouseEnter={() => !n.isCenter && setHoveredNode(n)}
-              onMouseLeave={() => !n.isCenter && setHoveredNode(null)}>
-              
-              {n.isCenter ? (
-                <circle cx={n.x} cy={n.y} r="5" fill="#06b6d4" opacity="0.25" />
-              ) : (
-                <circle cx={n.x} cy={n.y} r="3.5" fill={n.color} opacity="0.15" className="transition-all duration-300 group-hover:scale-125 group-hover:opacity-25" />
-              )}
-              <circle cx={n.x} cy={n.y} r={n.isCenter ? 2.2 : 1.8}
-                fill={n.isCenter ? '#06b6d4' : n.color} className="transition-all duration-300 group-hover:fill-white" />
-              
-              {/* Badge count circle if count > 0 */}
-              {!n.isCenter && n.count > 0 && (
-                <g>
-                  <circle cx={n.x + 3.8} cy={n.y - 3.8} r="2" fill={n.color} />
-                  <text x={n.x + 3.8} y={n.y - 2.9} textAnchor="middle" className="fill-[#0b0d18] font-mono font-black text-[1.6px] select-none">
-                    {n.count}
-                  </text>
-                </g>
-              )}
 
-              {n.isCenter ? (
-                <text x={n.x} y={n.y} textAnchor="middle" className="select-none font-mono">
-                  {n.label.includes('—') || n.label.includes('-') ? (
-                    (() => {
-                      const parts = n.label.split(/—|-/);
-                      return (
-                        <>
-                          <tspan x={n.x} dy="8" className="fill-white font-black text-[2.4px] uppercase tracking-wider">{parts[0].trim()}</tspan>
-                          <tspan x={n.x} dy="3.2" className="fill-slate-500 font-medium text-[1.6px] uppercase tracking-widest">{parts[1].trim().slice(0, 32)}...</tspan>
-                        </>
-                      );
-                    })()
-                  ) : (
-                    <tspan x={n.x} dy="8" className="fill-white font-black text-[2.4px] uppercase tracking-wider">{n.label}</tspan>
-                  )}
-                </text>
-              ) : (
-                <text
-                  x={n.x}
-                  y={n.y + 6.5}
-                  textAnchor="middle"
-                  className="fill-slate-400 font-mono font-bold select-none text-[2.4px] uppercase tracking-wider transition-colors group-hover:fill-white"
+      {viewMode === 'network' ? (
+        <>
+          <div className="relative w-full aspect-video bg-[#0b0d18] rounded-xl overflow-hidden border border-white/[0.05]">
+            {/* Background SVG for connector lines and pulses */}
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+              <style>{`
+                @keyframes dash-flow {
+                  to {
+                    stroke-dashoffset: -20;
+                  }
+                }
+              `}</style>
+              
+              {/* Animated pulses around center node */}
+              <circle cx="50" cy="50" r="5" fill="#06b6d4" opacity="0.3">
+                <animate attributeName="r" values="5;14" dur="4s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.3;0" dur="4s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="50" cy="50" r="5" fill="#06b6d4" opacity="0.15">
+                <animate attributeName="r" values="5;24" dur="6s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.15;0" dur="6s" repeatCount="indefinite" />
+              </circle>
+
+              {/* Connecting lines */}
+              {lines.map(([a, b]) => {
+                const na = getNode(a);
+                const nb = getNode(b);
+                const isHovered = hoveredNode && (hoveredNode.id === a || hoveredNode.id === b);
+                return (
+                  <line
+                    key={`${a}-${b}`}
+                    x1={na.x}
+                    y1={na.y}
+                    x2={nb.x}
+                    y2={nb.y}
+                    stroke={isHovered ? nb.color : "#06b6d435"}
+                    strokeWidth={isHovered ? "0.6" : "0.35"}
+                    className="transition-all duration-300"
+                    style={{
+                      strokeDasharray: isHovered ? "2, 1" : "3, 2",
+                      animation: `dash-flow ${isHovered ? '0.6s' : '1.8s'} linear infinite`
+                    }}
+                  />
+                );
+              })}
+            </svg>
+
+            {/* Foreground HTML elements positioned with percentages */}
+            {nodes.map(n => {
+              if (n.isCenter) {
+                const labelText = n.label;
+                const hasDash = labelText.includes('—') || labelText.includes('-');
+                let part1 = labelText;
+                let part2 = '';
+                if (hasDash) {
+                  const parts = labelText.split(/—|-/);
+                  part1 = parts[0].trim();
+                  part2 = parts[1].trim();
+                }
+                return (
+                  <div
+                    key={n.id}
+                    className="absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 z-10 select-none text-center"
+                  >
+                    <div className="flex flex-col items-center justify-center p-2.5 sm:p-4 rounded-2xl bg-[#0b0d18]/90 border border-[#06b6d4]/40 shadow-[0_0_20px_rgba(6,182,212,0.15)] max-w-[130px] sm:max-w-[190px] transition-all duration-300 hover:scale-102 hover:border-[#06b6d4]">
+                      <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#06b6d4]/10 flex items-center justify-center mb-1 sm:mb-2 border border-[#06b6d4]/30">
+                        <Globe className="text-[#06b6d4] w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
+                      </div>
+                      <p className="text-[9px] sm:text-xs font-black text-white uppercase tracking-wider leading-tight w-full truncate">
+                        {part1}
+                      </p>
+                      {part2 && (
+                        <p className="text-[7px] sm:text-[8px] font-bold text-slate-500 mt-0.5 sm:mt-1 truncate w-full uppercase tracking-widest">
+                          {part2}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={n.id}
+                  style={{
+                    left: `${n.x}%`,
+                    top: `${n.y}%`,
+                  }}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
                 >
-                  {n.label}
-                </text>
-              )}
-            </g>
-          ))}
-        </svg>
-      </div>
+                  <div
+                    onClick={() => onNodeClick && onNodeClick(n.id)}
+                    onMouseEnter={() => setHoveredNode(n)}
+                    onMouseLeave={() => setHoveredNode(null)}
+                    className="flex flex-col p-2 rounded-xl bg-[#111420]/95 border border-white/[0.08] backdrop-blur-sm shadow-lg transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 cursor-pointer w-[110px] sm:w-[155px] group"
+                    style={{
+                      borderColor: hoveredNode?.id === n.id ? `${n.color}60` : 'rgba(255,255,255,0.08)',
+                      boxShadow: hoveredNode?.id === n.id ? `0 0 15px ${n.color}25` : '0 4px 6px -1px rgba(0,0,0,0.1)'
+                    }}
+                  >
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <div
+                        className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110"
+                        style={{
+                          background: `${n.color}18`,
+                          border: `1px solid ${n.color}35`,
+                        }}
+                      >
+                        <n.icon size={11} style={{ color: n.color }} className="sm:w-3 sm:h-3" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[8.5px] sm:text-[10px] font-bold text-white leading-tight truncate uppercase tracking-wide group-hover:text-white transition-colors">
+                          {n.label}
+                        </p>
+                        <span
+                          className="inline-block text-[7.5px] sm:text-[8.5px] font-bold font-mono px-1 rounded-md mt-0.5"
+                          style={{
+                            background: `${n.color}12`,
+                            color: n.color
+                        }}
+                        >
+                          {n.count} {n.count === 1 ? 'ítem' : 'ítems'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Inline list preview (top 2 elements) */}
+                    {n.items.length > 0 && (
+                      <div className="hidden sm:block mt-2 pt-2 border-t border-white/[0.05] space-y-1">
+                        {n.items.slice(0, 2).map((item, idx) => (
+                          <div key={idx} className="flex items-start gap-1 text-[8px] text-slate-400">
+                            <span style={{ color: n.color }} className="shrink-0">•</span>
+                            <span className="truncate w-full leading-normal">{item}</span>
+                          </div>
+                        ))}
+                        {n.items.length > 2 && (
+                          <div className="text-[7.5px] text-slate-500 font-mono pl-2">
+                            +{n.items.length - 2} más...
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
-      {/* Dynamic Item Preview HUD */}
-      <div className="mt-3 px-3 py-2 bg-slate-950/40 border border-white/5 rounded-xl min-h-[52px] flex flex-col justify-center transition-all duration-300">
-        {hoveredNode ? (
-          <div>
-            <p className="text-[8px] uppercase tracking-widest text-slate-500 font-bold font-mono">
-              Vista rápida · {hoveredNode.label} ({hoveredNode.count || 0} identificados)
-            </p>
-            <div className="flex flex-wrap gap-1.5 mt-1.5">
-              {hoveredNode.items.length > 0 ? (
-                hoveredNode.items.map((item, idx) => (
-                  <span key={idx} className="text-[9px] font-medium px-2 py-0.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-slate-300">
-                    {item}
+          {/* Dynamic Item Preview HUD */}
+          <div className="mt-3 px-4 py-2.5 bg-[#0b0d18] border border-white/[0.06] rounded-xl min-h-[52px] flex flex-col justify-center transition-all duration-300">
+            {hoveredNode ? (
+              <div>
+                <p className="text-[8px] uppercase tracking-widest text-slate-500 font-bold font-mono">
+                  Vista rápida · {hoveredNode.label} ({hoveredNode.count || 0} identificados)
+                </p>
+                <div className="flex flex-wrap gap-1.5 mt-1.5">
+                  {hoveredNode.items.length > 0 ? (
+                    hoveredNode.items.map((item, idx) => (
+                      <span
+                        key={idx}
+                        className="text-[9px] font-medium px-2 py-0.5 rounded-lg border text-slate-200 transition-colors duration-300"
+                        style={{
+                          background: `${hoveredNode.color}12`,
+                          borderColor: `${hoveredNode.color}25`
+                        }}
+                      >
+                        {item}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-[9px] text-[#f97316]/70 font-bold italic">
+                      Ningún elemento registrado. Haz clic en el nodo para configurarlo.
+                    </span>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-1 select-none">
+                <p className="text-[8px] text-slate-500 font-bold font-mono uppercase tracking-widest">
+                  Posiciona el cursor sobre un nodo para ver la lista de elementos
+                </p>
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        /* Matrix Grid View */
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {nodes.filter(n => !n.isCenter).map(n => (
+            <div
+              key={n.id}
+              onClick={() => onNodeClick && onNodeClick(n.id)}
+              className="bg-[#111420]/80 border border-white/[0.06] hover:border-white/[0.15] hover:bg-[#111420]/95 rounded-xl p-4 shadow-md transition-all duration-300 hover:-translate-y-0.5 cursor-pointer group flex flex-col justify-between min-h-[145px]"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/[0.05]">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105"
+                      style={{
+                        background: `${n.color}15`,
+                        border: `1px solid ${n.color}30`,
+                      }}
+                    >
+                      <n.icon size={13} style={{ color: n.color }} />
+                    </div>
+                    <span className="text-[11px] font-bold text-white uppercase tracking-wider">
+                      {n.label}
+                    </span>
+                  </div>
+                  <span
+                    className="text-[9px] font-bold font-mono px-2 py-0.5 rounded-full"
+                    style={{
+                      background: `${n.color}15`,
+                      color: n.color,
+                      border: `1px solid ${n.color}25`
+                    }}
+                  >
+                    {n.count} {n.count === 1 ? 'elemento' : 'elementos'}
                   </span>
-                ))
-              ) : (
-                <span className="text-[9px] text-[#f97316]/70 font-bold italic">
-                  Ningún elemento registrado. Haz clic en el nodo para configurarlo.
-                </span>
-              )}
+                </div>
+
+                {/* Items List */}
+                <div className="mt-3 space-y-1.5 max-h-[85px] overflow-y-auto pr-1">
+                  {n.items.length > 0 ? (
+                    n.items.map((item, idx) => (
+                      <div key={idx} className="flex items-start gap-1.5 text-[10px] text-slate-300">
+                        <span style={{ color: n.color }} className="shrink-0 mt-0.5">•</span>
+                        <span className="leading-tight">{item}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-[9px] text-[#f97316]/70 font-semibold italic flex items-center gap-1 mt-1">
+                      <AlertTriangle size={10} /> Ningún elemento registrado.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Action link */}
+              <div className="mt-3 pt-2 border-t border-white/[0.04] flex items-center justify-between text-[9px] text-slate-500 group-hover:text-white transition-colors font-semibold">
+                <span>{n.items.length > 0 ? 'Editar elementos' : 'Completar sección'}</span>
+                <ArrowRight size={10} className="transform group-hover:translate-x-1 transition-transform" style={{ color: n.color }} />
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center py-1 select-none">
-            <p className="text-[8px] text-slate-500 font-bold font-mono uppercase tracking-widest">
-              Posiciona el cursor sobre un nodo para ver la lista de elementos
-            </p>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
