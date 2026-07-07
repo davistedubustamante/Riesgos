@@ -11,7 +11,7 @@
     "build": "npm run build --workspace=client"
   },
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.18.0"

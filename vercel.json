@@ -1,21 +1,14 @@
 {
   "version": 2,
+  "outputDirectory": "client/dist",
   "rewrites": [
     {
       "source": "/api/:match*",
       "destination": "/api/index.js"
     },
     {
-      "source": "/assets/:match*",
-      "destination": "/client/dist/assets/:match*"
-    },
-    {
-      "source": "/((?!api|assets).*).:ext",
-      "destination": "/client/dist/$1.:ext"
-    },
-    {
       "source": "/((?!api).*)",
-      "destination": "/client/dist/index.html"
+      "destination": "/index.html"
     }
   ]
 }
