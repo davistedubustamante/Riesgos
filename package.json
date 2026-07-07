@@ -9,5 +9,8 @@
   ],
   "scripts": {
     "build": "npm run build --workspace=client"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
