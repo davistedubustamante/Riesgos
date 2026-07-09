@@ -343,6 +343,13 @@ body {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  @keyframes slide-in {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0); }
+  }
+  .animate-slide-in {
+    animation: slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 }
 
 /* ─── Scrollbar ─── */
@@ -361,4 +368,17 @@ body {
 :focus-visible {
   outline: 2px solid rgba(6, 182, 212, 0.5);
   outline-offset: 2px;
+}
+
+/* ─── ISO Timeline Container Query ─── */
+.iso-timeline-wrapper {
+  container-type: inline-size;
+}
+.iso-timeline-label {
+  display: none !important;
+}
+@container (min-width: 480px) {
+  .iso-timeline-label {
+    display: inline !important;
+  }
 }

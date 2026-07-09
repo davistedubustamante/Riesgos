@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, FolderKanban, FileText, AlertTriangle, Grid3x3, Flame,
   ListChecks, Repeat2, BookOpen, Users, Activity, Package, LogOut, RefreshCw,
-  UserCog, History, Search, Bell, ChevronDown, Hexagon,
+  UserCog, History, Search, Bell, ChevronDown, Hexagon, Menu,
 } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { useAuth } from '@/store/AuthContext';
@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import MobileNav from '@/components/MobileNav';
 
 const nav = [
   { to: '/dashboard',     label: 'Dashboard',          icon: LayoutDashboard, end: true },
@@ -41,6 +42,7 @@ export default function DashboardLayout() {
   const { projects, activeProjectId, setActiveProject, loadProjects } = useAppStore();
   const { user, logout } = useAuth();
   const [search, setSearch] = useState('');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     if (!projects.length) loadProjects();
@@ -64,8 +66,8 @@ export default function DashboardLayout() {
 
   return (
     <div className="dark flex h-screen overflow-hidden bg-[#0a0f1c] text-slate-100">
-      {/* ── Modular Sidebar ── */}
-      <aside className="w-64 shrink-0 sidebar-shell relative z-10 flex flex-col">
+      {/* ── Desktop Sidebar — hidden on mobile/tablet ── */}
+      <aside className="hidden lg:flex w-64 shrink-0 sidebar-shell relative z-10 flex-col">
         {/* Logo block */}
         <div className="px-5 py-5 border-b border-white/[0.06]">
           <button
@@ -123,24 +125,44 @@ export default function DashboardLayout() {
         </div>
       </aside>
 
+      {/* ── Mobile Drawer Nav ── */}
+      {mobileNavOpen && (
+        <MobileNav
+          nav={filteredNav}
+          user={user}
+          activeProject={activeProject}
+          onClose={() => setMobileNavOpen(false)}
+        />
+      )}
+
       {/* ── Main area ── */}
       <div className="flex-1 flex flex-col min-w-0 relative">
         {/* Modular Topbar (search + filters + project + user) */}
-        <header className="topbar h-16 flex items-center gap-4 px-6 shrink-0 z-20">
+        <header className="topbar h-14 sm:h-16 flex items-center gap-3 px-4 sm:px-6 shrink-0 z-20">
+          {/* Hamburger — solo visible en móvil */}
+          <button
+            onClick={() => setMobileNavOpen(true)}
+            className="lg:hidden p-1.5 rounded-lg hover:bg-white/5 text-slate-300 hover:text-slate-100 transition-colors"
+            aria-label="Abrir menú"
+          >
+            <Menu size={20} />
+          </button>
+
           {/* Search */}
-          <div className="relative flex-1 max-w-md">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <div className="relative flex-1 max-w-xs sm:max-w-md">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 hidden sm:block" />
+            <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 sm:hidden" />
             <input
               type="text"
-              placeholder="Buscar riesgos, proyectos, stakeholders…"
+              placeholder="Buscar riesgos, proyectos…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="search-input w-full text-sm"
+              className="search-input w-full text-xs sm:text-sm pl-8 sm:pl-9"
             />
           </div>
 
-          {/* Filter chips (project selector) */}
-          <div className="flex items-center gap-2">
+          {/* Filter chips (project selector) — hidden on small mobile */}
+          <div className="hidden sm:flex items-center gap-2">
             <span className="text-xs text-slate-400 font-medium hidden lg:inline">Proyecto:</span>
             <div className="relative">
               <select
@@ -161,31 +183,31 @@ export default function DashboardLayout() {
           <div className="flex-1" />
 
           {/* Right cluster: refresh + bell + user */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => loadProjects()}
               title="Recargar"
-              className="h-9 w-9 rounded-lg text-slate-300 hover:bg-white/5"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg text-slate-300 hover:bg-white/5"
             >
-              <RefreshCw size={15} />
+              <RefreshCw size={14} className="sm:size-[15px]" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               title="Notificaciones"
-              className="h-9 w-9 rounded-lg text-slate-300 hover:bg-white/5 relative"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg text-slate-300 hover:bg-white/5 relative hidden sm:flex"
             >
-              <Bell size={15} />
-              <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-rose-500" />
+              <Bell size={14} className="sm:size-[15px]" />
+              <span className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-1.5 h-1.5 rounded-full bg-rose-500" />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-9 px-1.5 rounded-lg hover:bg-white/5 flex items-center gap-2">
-                  <Avatar className="h-7 w-7">
-                    <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs font-semibold">
+                <Button variant="ghost" className="h-8 px-1.5 sm:h-9 sm:px-1.5 rounded-lg hover:bg-white/5 flex items-center gap-2">
+                  <Avatar className="h-6 w-6 sm:h-7 sm:w-7">
+                    <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[10px] sm:text-xs font-semibold">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
@@ -222,7 +244,7 @@ export default function DashboardLayout() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6 bg-[#0a0f1c]">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-[#0a0f1c]">
           <Outlet />
         </main>
       </div>

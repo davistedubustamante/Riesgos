@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, Fragment } from 'react';
+import { useState, useMemo, useCallback, Fragment, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -95,27 +95,29 @@ function IsoDotLine({ contextPct, hasRisks, hasSprints }) {
     { label: 'Monitoreo',     done: hasSprints },
   ];
   return (
-    <div className="flex items-center justify-between w-full bg-slate-950/20 border border-white/5 rounded-xl p-2.5">
-      {steps.map((s, i) => (
-        <Fragment key={s.label}>
-          {i > 0 && (
-            <div className={`h-0.5 flex-1 mx-1.5 transition-all duration-500 rounded-full ${s.done ? 'bg-cyan-500 shadow-[0_0_4px_#06b6d4]' : 'bg-slate-800'}`} />
-          )}
-          <div className="flex items-center gap-1.5 select-none" title={`${s.label}: ${s.done ? 'Completado' : 'Pendiente'}`}>
-            <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7.5px] font-black transition-all ${
-              s.done 
-                ? 'bg-cyan-500 text-slate-950 shadow-[0_0_8px_#06b6d4]' 
-                : 'bg-slate-800 text-slate-500 border border-slate-700'
-            }`}>
-              {s.done ? '✓' : i + 1}
+    <div className="iso-timeline-wrapper w-full">
+      <div className="flex items-center justify-between w-full bg-slate-950/20 border border-white/5 rounded-xl p-2.5">
+        {steps.map((s, i) => (
+          <Fragment key={s.label}>
+            {i > 0 && (
+              <div className={`h-0.5 flex-1 mx-1.5 transition-all duration-500 rounded-full ${s.done ? 'bg-cyan-500 shadow-[0_0_4px_#06b6d4]' : 'bg-slate-800'}`} />
+            )}
+            <div className="flex items-center gap-1.5 select-none" title={`${s.label}: ${s.done ? 'Completado' : 'Pendiente'}`}>
+              <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[7.5px] font-black transition-all ${
+                s.done 
+                  ? 'bg-cyan-500 text-slate-950 shadow-[0_0_8px_#06b6d4]' 
+                  : 'bg-slate-800 text-slate-500 border border-slate-700'
+              }`}>
+                {s.done ? '✓' : i + 1}
+              </div>
+              <span className="iso-timeline-label text-[8px] font-black uppercase tracking-wider transition-colors"
+                style={{ color: s.done ? '#06b6d4' : '#64748b' }}>
+                {s.label}
+              </span>
             </div>
-            <span className="text-[8px] font-black uppercase tracking-wider hidden md:inline transition-colors"
-              style={{ color: s.done ? '#06b6d4' : '#64748b' }}>
-              {s.label}
-            </span>
-          </div>
-        </Fragment>
-      ))}
+          </Fragment>
+        ))}
+      </div>
     </div>
   );
 }
@@ -176,7 +178,7 @@ function ExposureMap({ projects }) {
               style={{ left: `${xPct}%`, transform: 'translate(-50%,-50%)' }}
               title={`${p.name}: ${p.riskCount || 0} riesgos`}>
               
-              <span className="text-[8.5px] font-mono font-bold text-slate-400 bg-[#121520] border border-white/5 px-2.5 py-0.5 rounded-lg select-none transition-all duration-300 group-hover/tooltip:border-cyan-500/30 group-hover/tooltip:text-white shadow-lg">
+              <span className="text-[8.5px] font-mono font-bold text-slate-400 bg-[#121520] border border-white/5 px-2.5 py-0.5 rounded-lg select-none transition-all duration-300 group-hover/tooltip:border-cyan-500/30 group-hover/tooltip:text-white shadow-lg hidden sm:block">
                 {p.name.slice(0, 16)}
               </span>
             </div>
@@ -437,6 +439,15 @@ export default function Projects() {
   const [filterStatus, setFilterStatus] = useState('');
   const [filterRisk, setFilterRisk] = useState('');
   const { register, handleSubmit, reset } = useForm();
+  
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const selectClass = "w-full sm:w-44 text-[11px] rounded-xl border border-white/5 bg-[#0b0c13]/80 text-slate-400 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-cyan-500/30 cursor-pointer transition-all hover:border-white/10 hover:text-white";
 
@@ -535,7 +546,7 @@ export default function Projects() {
         </div>
 
         {/* ── Metric tiles ───────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <MetricTile icon={Layers}        value={stats.total}     label="Total"           color="#3b82f6" spark={[3,5,4,6,5,7]} />
           <MetricTile icon={Play}         value={stats.active}    label="En ejecución"    color="#10b981" spark={[2,3,4,5,5,6]} />
           <MetricTile icon={Circle}       value={stats.paused}    label="Pausados"        color="#f97316" spark={[1,2,1,2,1,2]} />
@@ -559,7 +570,7 @@ export default function Projects() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
             {/* Left: filters + project list */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className={`${activeProject && !isMobile ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-4 transition-all duration-300`}>
 
               {/* Filters */}
               <div className="flex items-center gap-2 flex-wrap w-full">
@@ -589,7 +600,7 @@ export default function Projects() {
               </div>
 
               {/* Project cards grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className={`grid grid-cols-1 md:grid-cols-2 ${activeProject && !isMobile ? '' : 'xl:grid-cols-3'} gap-4`}>
                 {filteredProjects.map(p => (
                   <ProjectCard
                     key={p.id}
@@ -601,7 +612,7 @@ export default function Projects() {
                   />
                 ))}
                 {filteredProjects.length === 0 && (
-                  <div className="col-span-2 flex items-center justify-center py-16 text-center">
+                  <div className="col-span-full flex items-center justify-center py-16 text-center">
                     <div className="space-y-2">
                       <Search size={20} className="text-[#4a4f5c] mx-auto" />
                       <p className="text-[12px] text-[#8a8f98]">No hay proyectos que coincidan con los filtros.</p>
@@ -611,16 +622,30 @@ export default function Projects() {
               </div>
             </div>
 
-            {/* Right: selected project panel */}
-            <div className="lg:col-span-1">
-              <SelectedProjectPanel
-                project={activeProject}
-                onClose={() => setActiveProject(null)}
-              />
-            </div>
+            {/* Right: selected project panel (Desktop only) */}
+            {activeProject && !isMobile && (
+              <div className="lg:col-span-1">
+                <SelectedProjectPanel
+                  project={activeProject}
+                  onClose={() => setActiveProject(null)}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {/* ── Mobile/Tablet Detail Dialog ───────────────────────────────────────── */}
+      <Dialog open={!!activeProject && isMobile} onOpenChange={isOpen => { if (!isOpen) setActiveProject(null); }}>
+        <DialogContent className="max-w-md text-white bg-[#0b0c13]/95 border border-white/10 p-0 overflow-y-auto max-h-[90vh] rounded-2xl">
+          {activeProject && (
+            <SelectedProjectPanel
+              project={activeProject}
+              onClose={() => setActiveProject(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* ── Create/Edit Dialog ───────────────────────────────────────────────── */}
       <Dialog open={open} onOpenChange={isOpen => { if (!isOpen) { setOpen(false); setEditing(null); } }}>

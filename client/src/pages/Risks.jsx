@@ -539,9 +539,10 @@ export default function Risks() {
           ) : filtered.length === 0 ? (
             <EmptyState title="Sin riesgos registrados" description="No hay riesgos identificados que coincidan con los filtros activos." />
           ) : viewMode === 'matrix' ? (
-            /* Matriz 5x5 de Nodos Reactivos */
-            <div className="module-card p-6 flex flex-col items-center justify-center w-full min-h-[460px]">
-              <div className="w-full max-w-[500px]">
+            /* Matriz 5x5 de Nodos Reactivos — scroll horizontal en móvil */
+            <div className="module-card p-4 sm:p-6 flex flex-col items-center justify-center w-full min-h-[400px] sm:min-h-[460px]">
+              <div className="w-full overflow-x-auto">
+              <div className="min-w-[420px]">
                 <div className="flex w-full gap-3">
                   <div className="flex items-center justify-center text-[9px] uppercase font-black text-slate-500 tracking-widest [writing-mode:vertical-lr] rotate-180 select-none shrink-0">
                     Impacto (Y)
@@ -654,11 +655,12 @@ export default function Risks() {
                   </div>
                 </div>
               </div>
+              </div>
             </div>
           ) : viewMode === 'constellation' ? (
-            /* Constelación Orbital (Exposure Orbit) */
-            <div className="module-card p-6 flex flex-col items-center justify-center w-full min-h-[460px]">
-              <div className="relative w-full max-w-[500px] aspect-square rounded-full border border-white/5 bg-[#0b0c15]/60 overflow-hidden flex items-center justify-center select-none shadow-[inset_0_0_40px_rgba(0,0,0,0.8)]">
+            /* Constelación Orbital (Exposure Orbit) — scroll en móvil */
+            <div className="module-card p-4 sm:p-6 flex flex-col items-center justify-center w-full min-h-[400px] sm:min-h-[460px]">
+              <div className="relative w-full max-w-[380px] sm:max-w-[500px] aspect-square rounded-full border border-white/5 bg-[#0b0c15]/60 overflow-hidden flex items-center justify-center select-none shadow-[inset_0_0_40px_rgba(0,0,0,0.8)]">
                 
                 {/* Central Warning Core */}
                 <div className="absolute w-4 h-4 rounded-full bg-[#ef4444]/10 border border-[#ef4444]/30 shadow-[0_0_10px_rgba(239,68,68,0.4)] flex items-center justify-center">
