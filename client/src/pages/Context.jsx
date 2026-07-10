@@ -737,7 +737,7 @@ export default function Context() {
 
   if (!activeProjectId || projects.length === 0) {
     return (
-      <div className="space-y-8 px-6 pt-6 min-h-screen" style={{ background: '#0b0d18' }}>
+      <div className="space-y-8 px-6 pt-6 min-h-screen" style={{ background: '#080c14' }}>
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2">
             <Layers size={22} className="text-[#06b6d4]" />
@@ -763,7 +763,7 @@ export default function Context() {
   const g = guideContent[activeStep];
 
   return (
-    <div className="min-h-screen" style={{ background: '#0b0d18' }}>
+    <div className="min-h-screen" style={{ background: '#080c14' }}>
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="px-6 pt-6 pb-5 border-b border-white/[0.05]">
