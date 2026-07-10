@@ -60,7 +60,7 @@ export default function AuditLog() {
     if (action.includes('update') || action === 'change_user_role') return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
     if (action.includes('create') || action === 'register' || action === 'activate_user') return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
     if (action === 'login') return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30';
-    return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+    return 'hsl(var(--risk-neutral) / 0.2) hsl(var(--text-primary)) hsl(var(--risk-neutral) / 0.3)';
   };
 
   const getEntityBadgeColor = (type) => {
@@ -68,7 +68,7 @@ export default function AuditLog() {
     if (type === 'project') return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
     if (type === 'sprint') return 'bg-violet-500/10 text-violet-400 border-violet-500/20';
     if (type === 'user') return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-    return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+    return 'hsl(var(--risk-neutral) / 0.1) hsl(var(--text-secondary)) hsl(var(--risk-neutral) / 0.2)';
   };
 
   const formatDate = (dateStr) => {
@@ -114,18 +114,18 @@ export default function AuditLog() {
               <Input
                 type="text"
                 placeholder="Buscar en la bitácora..."
-                className="pl-9 bg-slate-950/40 border-white/10"
+                className="pl-9 bg-[#080c14]/40 border-white/10 text-white"
                 value={filters.search}
                 onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
               />
             </div>
             
             <select
-              className="flex h-9 w-full rounded-md border border-white/10 bg-slate-950/40 text-slate-300 px-3 py-1.5 text-sm shadow-sm transition-all focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+              className="flex h-9 w-full rounded-md border border-[#1e293b]/60 bg-[#0d1527] text-white px-3 py-1.5 text-sm shadow-sm transition-all focus:outline-none focus:ring-1 focus:ring-cyan-500/30 cursor-pointer hover:border-slate-700/50"
               value={filters.action}
               onChange={(e) => setFilters(f => ({ ...f, action: e.target.value }))}
             >
-              <option value="" className="bg-[#0d1127] text-white">Todas las acciones</option>
+              <option value="" className="bg-[#0d1127] text-slate-400">Todas las acciones</option>
               <option value="login" className="bg-[#0d1127] text-white">login (Inicio de sesión)</option>
               <option value="logout" className="bg-[#0d1127] text-white">logout (Cierre de sesión)</option>
               <option value="create_risk" className="bg-[#0d1127] text-white">create_risk (Crear riesgo)</option>
@@ -140,11 +140,11 @@ export default function AuditLog() {
             </select>
 
             <select
-              className="flex h-9 w-full rounded-md border border-white/10 bg-slate-950/40 text-slate-300 px-3 py-1.5 text-sm shadow-sm transition-all focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer"
+              className="flex h-9 w-full rounded-md border border-[#1e293b]/60 bg-[#0d1527] text-white px-3 py-1.5 text-sm shadow-sm transition-all focus:outline-none focus:ring-1 focus:ring-cyan-500/30 cursor-pointer hover:border-slate-700/50"
               value={filters.entityType}
               onChange={(e) => setFilters(f => ({ ...f, entityType: e.target.value }))}
             >
-              <option value="" className="bg-[#0d1127] text-white">Todas las entidades</option>
+              <option value="" className="bg-[#0d1127] text-slate-400">Todas las entidades</option>
               <option value="risk" className="bg-[#0d1127] text-white">risk (Riesgos)</option>
               <option value="project" className="bg-[#0d1127] text-white">project (Proyectos)</option>
               <option value="sprint" className="bg-[#0d1127] text-white">sprint (Sprints)</option>
@@ -153,7 +153,7 @@ export default function AuditLog() {
 
             <Button
               variant="outline"
-              className="border-white/10 text-xs w-full bg-slate-950/20"
+              className="border-white/10 text-xs w-full bg-[#080c14]/20 hover:bg-[#0e1628]/40 hover:text-white transition-colors"
               onClick={() => { setFilters({ userId: '', action: '', entityType: '', search: '' }); setPage(1); }}
             >
               Limpiar filtros
@@ -191,7 +191,7 @@ export default function AuditLog() {
                 <TableBody>
                   {filteredLogs.map((log) => (
                     <TableRow key={log.id} className="border-white/5 hover:bg-white/5 transition-colors">
-                      <TableCell className="py-3 text-xs text-slate-300 font-mono">
+                      <TableCell className="py-3 text-xs hsl(var(--text-primary)) font-mono">
                         {formatDate(log.createdAt)}
                       </TableCell>
                       <TableCell className="py-3">
@@ -223,10 +223,10 @@ export default function AuditLog() {
                       <TableCell className="py-3 text-xs font-mono text-muted-foreground">
                         {log.entityId || '—'}
                       </TableCell>
-                      <TableCell className="py-3 text-xs font-mono text-slate-400">
+                      <TableCell className="py-3 text-xs font-mono hsl(var(--text-secondary))">
                         {log.ip || '—'}
                       </TableCell>
-                      <TableCell className="py-3 text-xs text-slate-400 font-mono max-w-[250px] truncate" title={JSON.stringify(log.meta)}>
+                      <TableCell className="py-3 text-xs hsl(var(--text-secondary)) font-mono max-w-[250px] truncate" title={JSON.stringify(log.meta)}>
                         {log.meta ? (
                           typeof log.meta === 'string' ? log.meta : JSON.stringify(log.meta)
                         ) : '—'}

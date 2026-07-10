@@ -32,7 +32,9 @@ export function pool() {
     _pool = mysql.createPool({
       ...cfg(),
       waitForConnections: true,
-      connectionLimit: 10,
+      connectionLimit: 3,
+      maxIdle: 3,
+      idleTimeout: 10000, // 10 segundos de inactividad antes de cerrar
       queueLimit: 0,
       connectTimeout: 10000,
       dateStrings: true, // conservar DATE/DATETIME como string estable
@@ -43,8 +45,13 @@ export function pool() {
 
 // query(sql, params) -> [rows, fields]
 export async function q(sql, params = []) {
-  const [rows] = await pool().query(sql, params);
-  return rows;
+  try {
+    const [rows] = await pool().query(sql, params);
+    return rows;
+  } catch (err) {
+    console.error(`[db error] Query: "${sql}" | Params: ${JSON.stringify(params)} | Error:`, err);
+    throw err;
+  }
 }
 
 export async function one(sql, params = []) {

@@ -64,7 +64,7 @@ const STRATEGY_DETAILS = {
   },
   'Escalar': { 
     label: 'Escalar', 
-    color: 'text-slate-400 border-slate-500/20 bg-slate-500/5 hover:bg-slate-500/10', 
+    color: 'hsl(var(--text-secondary)) hsl(var(--risk-neutral) / 0.2) hsl(var(--risk-neutral) / 0.05) hover:hsl(var(--risk-neutral) / 0.1)', 
     hex: '#64748b', 
     icon: ArrowUpRight, 
     desc: 'Notificar a alta gerencia porque excede el alcance del equipo.' 
@@ -337,12 +337,12 @@ export default function Treatment() {
         {/* Global health alert bar */}
         <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-3.5 px-4 py-3 rounded-2xl border backdrop-blur-md max-w-md ${systemHealth.bg}`}>
           <div>
-            <span className="text-[8px] font-black uppercase text-slate-500 tracking-wider">Estado de Mitigación</span>
+            <span className="text-[8px] font-black uppercase hsl(var(--text-muted)) tracking-wider">Estado de Mitigación</span>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-current animate-ping" style={{ color: systemHealth.color }} />
               <span className={`text-xs font-black uppercase ${systemHealth.color}`}>{systemHealth.label}</span>
             </div>
-            <p className="text-[10px] text-slate-400 mt-1 leading-snug">{systemHealth.desc}</p>
+            <p className="text-[10px] hsl(var(--text-secondary)) mt-1 leading-snug">{systemHealth.desc}</p>
           </div>
         </div>
       </div>
@@ -353,8 +353,8 @@ export default function Treatment() {
         <div className="module-card module-card-pad flex flex-col justify-between gap-3">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Riesgos a Tratar</p>
-              <p className="text-2xl font-black font-mono text-white mt-1.5">{totalCount} <span className="text-[10px] text-slate-500 font-normal">no bajos</span></p>
+              <p className="text-[10px] uppercase font-bold hsl(var(--text-secondary)) tracking-wider">Riesgos a Tratar</p>
+              <p className="text-2xl font-black font-mono text-white mt-1.5">{totalCount} <span className="text-[10px] hsl(var(--text-muted)) font-normal">no bajos</span></p>
             </div>
             <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 shrink-0">
               <ShieldAlert size={16} />
@@ -363,7 +363,7 @@ export default function Treatment() {
           <div className="h-1 rounded-full overflow-hidden bg-white/[0.04]">
             <div className="h-full bg-orange-400" style={{ width: `${totalCount ? 100 : 0}%` }} />
           </div>
-          <div className="text-[8.5px] text-slate-500 font-mono">
+          <div className="text-[8.5px] hsl(var(--text-muted)) font-mono">
             {noOwnerCount > 0 ? `${noOwnerCount} sin responsable asignado` : 'Todos los riesgos con líder'}
           </div>
         </div>
@@ -372,7 +372,7 @@ export default function Treatment() {
         <div className="module-card module-card-pad flex flex-col justify-between gap-3">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Críticos Abiertos</p>
+              <p className="text-[10px] uppercase font-bold hsl(var(--text-secondary)) tracking-wider">Críticos Abiertos</p>
               <p className="text-2xl font-black font-mono text-red-400 mt-1.5">{criticalCount}</p>
             </div>
             <div className="w-9 h-9 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 shrink-0">
@@ -382,7 +382,7 @@ export default function Treatment() {
           <div className="h-1 rounded-full overflow-hidden bg-white/[0.04]">
             <div className="h-full bg-red-400" style={{ width: `${totalCount ? (criticalCount / totalCount) * 100 : 0}%` }} />
           </div>
-          <div className="text-[8.5px] text-slate-500 font-mono flex items-center justify-between">
+          <div className="text-[8.5px] hsl(var(--text-muted)) font-mono flex items-center justify-between">
             <span>Alertas activas</span>
             <span className="text-red-400 font-bold font-mono">{criticalCount}</span>
           </div>
@@ -392,7 +392,7 @@ export default function Treatment() {
         <div className="module-card module-card-pad flex flex-col justify-between gap-3">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">En Ejecución</p>
+              <p className="text-[10px] uppercase font-bold hsl(var(--text-secondary)) tracking-wider">En Ejecución</p>
               <p className="text-2xl font-black font-mono text-cyan-400 mt-1.5">{inTreatment}</p>
             </div>
             <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 shrink-0">
@@ -402,7 +402,7 @@ export default function Treatment() {
           <div className="h-1 rounded-full overflow-hidden bg-white/[0.04]">
             <div className="h-full bg-cyan-400" style={{ width: `${totalCount ? (inTreatment / totalCount) * 100 : 0}%` }} />
           </div>
-          <div className="text-[8.5px] text-slate-500 font-mono flex items-center justify-between">
+          <div className="text-[8.5px] hsl(var(--text-muted)) font-mono flex items-center justify-between">
             <span>Tratamientos activos</span>
             <span className="text-cyan-400 font-bold">{inTreatment}</span>
           </div>
@@ -412,7 +412,7 @@ export default function Treatment() {
         <div className="module-card module-card-pad flex flex-col justify-between gap-3">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Tratamientos Vencidos</p>
+              <p className="text-[10px] uppercase font-bold hsl(var(--text-secondary)) tracking-wider">Tratamientos Vencidos</p>
               <p className="text-2xl font-black font-mono text-rose-400 mt-1.5">{overdueCount}</p>
             </div>
             <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 shrink-0">
@@ -422,7 +422,7 @@ export default function Treatment() {
           <div className="h-1 rounded-full overflow-hidden bg-white/[0.04]">
             <div className="h-full bg-rose-500" style={{ width: `${totalCount ? (overdueCount / totalCount) * 100 : 0}%` }} />
           </div>
-          <div className="text-[8.5px] text-slate-500 font-mono flex items-center justify-between">
+          <div className="text-[8.5px] hsl(var(--text-muted)) font-mono flex items-center justify-between">
             <span>Requieren atención</span>
             <span className="text-rose-400 font-bold font-mono">{overdueCount}</span>
           </div>
@@ -432,7 +432,7 @@ export default function Treatment() {
         <div className="module-card module-card-pad flex flex-col justify-between gap-3">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Avance Promedio</p>
+              <p className="text-[10px] uppercase font-bold hsl(var(--text-secondary)) tracking-wider">Avance Promedio</p>
               <p className="text-2xl font-black font-mono text-emerald-400 mt-1.5">{avgMitigationProgress}%</p>
             </div>
             <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
@@ -442,7 +442,7 @@ export default function Treatment() {
           <div className="h-1.5 rounded-full overflow-hidden bg-white/[0.04] border border-white/5">
             <div className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400" style={{ width: `${avgMitigationProgress}%` }} />
           </div>
-          <div className="text-[8.5px] text-slate-500 font-mono">
+          <div className="text-[8.5px] hsl(var(--text-muted)) font-mono">
             Tasa de efectividad general
           </div>
         </div>
@@ -453,7 +453,7 @@ export default function Treatment() {
         <Card className="border-red-500/10 bg-red-950/5 rounded-2xl p-4">
           <CardHeader className="p-0 pb-2 flex flex-row items-center gap-2 border-b border-white/5">
             <AlertCircle size={14} className="text-red-400" />
-            <CardTitle className="text-xs uppercase font-bold text-slate-400 tracking-widest">Atención Prioritaria (Alertas)</CardTitle>
+            <CardTitle className="text-xs uppercase font-bold hsl(var(--text-secondary)) tracking-widest">Atención Prioritaria (Alertas)</CardTitle>
           </CardHeader>
           <CardContent className="p-0 pt-2.5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
             {priorityAlerts.slice(0, 6).map((alert, idx) => (
@@ -465,7 +465,7 @@ export default function Treatment() {
                     ? 'bg-red-500/5 border-red-500/15 text-red-400 hover:bg-red-500/10'
                     : alert.type === 'warning'
                       ? 'bg-amber-500/5 border-amber-500/15 text-amber-400 hover:bg-amber-500/10'
-                      : 'bg-slate-900/40 border-white/5 text-slate-300 hover:bg-slate-900/60'
+                      : 'hsl(var(--surface-raised) / 0.4) border-white/5 hsl(var(--text-primary)) hover:hsl(var(--surface-raised) / 0.6)'
                 }`}
               >
                 <div className="flex items-center gap-2 truncate">
@@ -493,10 +493,10 @@ export default function Treatment() {
                 {/* Dynamic Filters select dropdowns */}
                 <div className="flex-1 flex flex-wrap items-center gap-2">
                   <div className="relative w-full sm:w-[200px]">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={12} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 hsl(var(--text-muted)) pointer-events-none" size={12} />
                     <input 
                       type="text"
-                      className="pl-8 w-full bg-[#12151e] border border-white/10 text-white rounded-xl py-1.5 text-xs focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-600"
+                      className="pl-8 w-full bg-[#12151e] border border-white/10 text-white rounded-xl py-1.5 text-xs focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:hsl(var(--text-muted))"
                       placeholder="Buscar plan..."
                       value={filters.search}
                       onChange={(e) => handleFilterChange('search', e.target.value)}
@@ -504,7 +504,7 @@ export default function Treatment() {
                   </div>
 
                   <select 
-                    className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-1.5 text-slate-300 cursor-pointer focus:outline-none"
+                    className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-1.5 hsl(var(--text-primary)) cursor-pointer focus:outline-none"
                     value={filters.classification}
                     onChange={(e) => handleFilterChange('classification', e.target.value)}
                   >
@@ -515,7 +515,7 @@ export default function Treatment() {
                   </select>
 
                   <select 
-                    className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-1.5 text-slate-300 cursor-pointer focus:outline-none"
+                    className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-1.5 hsl(var(--text-primary)) cursor-pointer focus:outline-none"
                     value={filters.strategy}
                     onChange={(e) => handleFilterChange('strategy', e.target.value)}
                   >
@@ -524,7 +524,7 @@ export default function Treatment() {
                   </select>
 
                   <select 
-                    className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-1.5 text-slate-300 cursor-pointer focus:outline-none"
+                    className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-1.5 hsl(var(--text-primary)) cursor-pointer focus:outline-none"
                     value={filters.owner}
                     onChange={(e) => handleFilterChange('owner', e.target.value)}
                   >
@@ -544,7 +544,7 @@ export default function Treatment() {
                 </div>
 
                 {/* View switcher buttons */}
-                <div className="flex items-center gap-1 bg-slate-950/40 p-1 border border-white/5 rounded-xl shrink-0 w-fit">
+                <div className="flex items-center gap-1 bg-[#080c14]/40 p-1 border border-white/5 rounded-xl shrink-0 w-fit">
                   <button
                     onClick={() => setViewMode('flow')}
                     className={`h-7 text-[10px] font-black uppercase tracking-wider rounded-lg px-3 transition-all cursor-pointer flex items-center gap-1 ${
@@ -577,7 +577,7 @@ export default function Treatment() {
 
           {/* Core Visualizations */}
           {loading ? (
-            <div className="text-center py-20 text-slate-500">Cargando flujos de tratamiento...</div>
+            <div className="text-center py-20 hsl(var(--text-muted))">Cargando flujos de tratamiento...</div>
           ) : filteredRisks.length === 0 ? (
             <EmptyState title="Sin planes pendientes" description="No hay riesgos identificados que coincidan con los criterios de búsqueda activos." />
           ) : viewMode === 'flow' ? (
@@ -593,15 +593,15 @@ export default function Treatment() {
                     {/* Header */}
                     <div className="pb-2 border-b border-white/5 space-y-1">
                       <div className="flex items-center justify-between gap-1">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-300 flex items-center gap-1">
+                        <span className="text-[10px] font-black uppercase tracking-wider hsl(var(--text-primary)) flex items-center gap-1">
                           <span className={`w-1.5 h-1.5 rounded-full ${stage.dotColor}`} />
                           {stage.label}
                         </span>
-                        <span className="text-[10px] font-bold bg-white/5 text-slate-400 px-1.5 py-0.5 rounded border border-white/5">
+                        <span className="text-[10px] font-bold bg-white/5 hsl(var(--text-secondary)) px-1.5 py-0.5 rounded border border-white/5">
                           {items.length}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-[8px] font-bold text-slate-500 font-mono">
+                      <div className="flex items-center justify-between text-[8px] font-bold hsl(var(--text-muted)) font-mono">
                         <span>Frecuencia</span>
                         <span>{pct}%</span>
                       </div>
@@ -616,7 +616,7 @@ export default function Treatment() {
                     {/* Stage risks scroll box */}
                     <div className="flex-1 overflow-y-auto max-h-[58vh] space-y-2.5 pr-0.5 custom-scrollbar">
                       {items.length === 0 ? (
-                        <div className="h-full flex items-center justify-center p-4 text-[9px] text-slate-600 text-center border border-dashed border-white/5 rounded-xl bg-white/[0.005]">
+                        <div className="h-full flex items-center justify-center p-4 text-[9px] hsl(var(--text-muted)) text-center border border-dashed border-white/5 rounded-xl bg-white/[0.005]">
                           Sin registros
                         </div>
                       ) : (
@@ -632,7 +632,7 @@ export default function Treatment() {
                               onClick={() => setSelectedRiskId(r.id)}
                               className={`p-3 rounded-xl border cursor-pointer select-none transition-all duration-300 relative group flex flex-col justify-between min-h-[110px] ${
                                 isSelected
-                                  ? 'bg-slate-900 border-white/20 shadow-[0_0_15px_rgba(6,182,212,0.03)] scale-[1.02]'
+                                  ? 'hsl(var(--surface-raised)) border-white/20 shadow-[0_0_15px_rgba(6,182,212,0.03)] scale-[1.02]'
                                   : 'bg-[#090d1a]/40 border-white/5 hover:border-white/10 hover:bg-[#0c122b]/60'
                               }`}
                             >
@@ -667,12 +667,12 @@ export default function Treatment() {
                                     style={{ width: `${progress}%` }} />
                                 </div>
                                 
-                                <div className="flex items-center justify-between text-[8px] font-mono text-slate-500">
+                                <div className="flex items-center justify-between text-[8px] font-mono hsl(var(--text-muted))">
                                   <span className="truncate max-w-[55px]" title={r.owner}>{r.owner || 'Sin owner'}</span>
                                   {isOverdue && stage.id !== 'Mitigado' ? (
                                     <span className="text-red-400 font-bold animate-pulse">VENCIDO</span>
                                   ) : (
-                                    <span className="text-slate-400">{progress}%</span>
+                                    <span className="hsl(var(--text-secondary))">{progress}%</span>
                                   )}
                                 </div>
                               </div>
@@ -692,7 +692,7 @@ export default function Treatment() {
             <div className="module-card p-6 flex flex-col items-center justify-center min-h-[440px]">
               <div className="w-full max-w-[650px] space-y-4">
                 <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest text-center select-none">Matriz de Estado vs. Severidad</p>
-                <div className="border border-white/5 rounded-2xl overflow-hidden bg-slate-950/20 backdrop-blur-md">
+                <div className="border border-white/5 rounded-2xl overflow-hidden bg-[#080c14]/20 backdrop-blur-md">
                   <table className="w-full border-collapse text-left">
                     <thead>
                       <tr className="border-b border-white/5 bg-white/[0.01]">
@@ -738,7 +738,7 @@ export default function Treatment() {
                                             key={r.id} 
                                             onClick={() => setSelectedRiskId(r.id)}
                                             className={`text-[6.5px] font-mono font-bold px-1 rounded-sm cursor-pointer hover:underline ${
-                                              selectedRiskId === r.id ? 'bg-white text-slate-900 font-black' : 'text-slate-400 bg-white/5'
+                                              selectedRiskId === r.id ? 'bg-white text-slate-900 font-black' : 'text-slate-300 bg-white/5'
                                             }`}
                                           >
                                             {r.code}
@@ -791,7 +791,7 @@ export default function Treatment() {
                         <TableCell className="font-mono text-[10px] font-bold text-cyan-400 py-3">{r.code}</TableCell>
                         <TableCell className="py-3 font-semibold text-white text-xs">{r.title}</TableCell>
                         <TableCell className="py-3"><RiskBadge value={r.classification} /></TableCell>
-                        <TableCell className="py-3 text-xs text-slate-300 font-semibold">{r.responseStrategy || '—'}</TableCell>
+                        <TableCell className="py-3 text-xs hsl(var(--text-primary)) font-semibold">{r.responseStrategy || '—'}</TableCell>
                         <TableCell className="py-3">
                           <div className="flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold text-cyan-400">
                             <span className="w-10 text-right">{progress}%</span>
@@ -800,9 +800,9 @@ export default function Treatment() {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="py-3 text-xs text-slate-400">{r.owner || '—'}</TableCell>
+                        <TableCell className="py-3 text-xs hsl(var(--text-secondary))">{r.owner || '—'}</TableCell>
                         <TableCell className="py-3">
-                          <Badge variant="outline" className="text-[9px] py-0 bg-white/5 border-white/5 text-slate-300">
+                          <Badge variant="outline" className="text-[9px] py-0 bg-white/5 border-white/5 hsl(var(--text-primary))">
                             {r.status}
                           </Badge>
                         </TableCell>
@@ -850,7 +850,7 @@ export default function Treatment() {
                             <div className="flex items-center gap-1 font-bold">
                               <strat.icon size={11} /> Estrategia: {strat.label}
                             </div>
-                            <span className="block text-slate-400 mt-1 font-normal leading-normal">{strat.desc}</span>
+                            <span className="block hsl(var(--text-secondary)) mt-1 font-normal leading-normal">{strat.desc}</span>
                           </div>
                         );
                       })()}
@@ -871,7 +871,7 @@ export default function Treatment() {
                   const reductionPct = Math.round(((inherent - residual) / inherent) * 100);
                   const progress = calculateTreatmentProgress(selectedRisk);
                   return (
-                    <div className="space-y-3 bg-slate-950/40 p-3.5 border border-white/5 rounded-2xl">
+                    <div className="space-y-3 bg-[#080c14]/40 p-3.5 border border-white/5 rounded-2xl">
                       <div className="flex items-center justify-between text-[9px] font-bold text-slate-400">
                         <span>Atenuación del Riesgo</span>
                         <span className="text-emerald-400 font-mono">Reducción: -{reductionPct}%</span>
@@ -923,17 +923,17 @@ export default function Treatment() {
                     { label: 'Mitigación Finalizada', date: (selectedRisk.status === 'Mitigado' || selectedRisk.status === 'Cerrado') ? 'Cerrado' : 'Pendiente', done: (selectedRisk.status === 'Mitigado' || selectedRisk.status === 'Cerrado') }
                   ];
                   return (
-                    <div className="space-y-2 bg-slate-950/40 p-3.5 border border-white/5 rounded-2xl">
+                    <div className="space-y-2 bg-[#080c14]/40 p-3.5 border border-white/5 rounded-2xl">
                       <span className="text-[9px] font-black uppercase text-slate-500 tracking-wider block">Línea de Tiempo del Plan</span>
                       <div className="space-y-2.5 mt-2.5 select-none relative pl-2">
                         {/* Vertical line connector */}
                         <div className="absolute left-[5px] top-1.5 bottom-1.5 w-[1px] bg-white/5 -z-10" />
-
+ 
                         {timelineEvents.map((ev, i) => (
                           <div key={i} className="flex items-start gap-2.5">
                             <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 transition-all ${ev.done ? 'bg-cyan-400 shadow-[0_0_6px_#06b6d4]' : 'bg-slate-800'}`} />
                             <div className="min-w-0">
-                              <span className={`text-[8.5px] font-bold block leading-none ${ev.done ? 'text-slate-300' : 'text-slate-600'}`}>{ev.label}</span>
+                              <span className={`text-[8.5px] font-bold block leading-none ${ev.done ? 'text-white' : 'text-slate-500'}`}>{ev.label}</span>
                               <span className="text-[7.5px] text-slate-500 font-mono block mt-0.5">{ev.date}</span>
                             </div>
                           </div>
@@ -944,11 +944,11 @@ export default function Treatment() {
                 })()}
 
                 {/* Control Action details and descriptions */}
-                <div className="space-y-2.5 max-h-[18vh] overflow-y-auto pr-1 custom-scrollbar text-[11px] leading-relaxed text-slate-300 border-t border-white/5 pt-3">
+                <div className="space-y-2.5 max-h-[18vh] overflow-y-auto pr-1 custom-scrollbar text-[11px] leading-relaxed text-white border-t border-white/5 pt-3">
                   {selectedRisk.treatmentAction ? (
                     <div>
                       <strong className="text-cyan-400 block text-[9px] uppercase tracking-wider mb-0.5">Acción Planificada</strong>
-                      <p className="bg-slate-950/20 p-2.5 rounded-xl border border-white/5">{selectedRisk.treatmentAction}</p>
+                      <p className="bg-[#080c14]/20 p-2.5 rounded-xl border border-white/5">{selectedRisk.treatmentAction}</p>
                     </div>
                   ) : (
                     <div className="bg-orange-500/5 border border-orange-500/10 p-2 rounded-xl text-center text-orange-400 text-[10px]">
@@ -959,14 +959,14 @@ export default function Treatment() {
                   {selectedRisk.expectedResult && (
                     <div>
                       <strong className="text-emerald-400 block text-[9px] uppercase tracking-wider mb-0.5">Resultado Esperado</strong>
-                      <p className="bg-slate-950/10 p-2 rounded-lg border border-white/5">{selectedRisk.expectedResult}</p>
+                      <p className="bg-[#080c14]/10 p-2 rounded-lg border border-white/5">{selectedRisk.expectedResult}</p>
                     </div>
                   )}
 
                   {selectedRisk.evidence && (
                     <div>
                       <strong className="text-indigo-400 block text-[9px] uppercase tracking-wider mb-0.5">Evidencia Registrada</strong>
-                      <p className="bg-slate-950/10 p-2 rounded-lg border border-white/5">{selectedRisk.evidence}</p>
+                      <p className="bg-[#080c14]/10 p-2 rounded-lg border border-white/5">{selectedRisk.evidence}</p>
                     </div>
                   )}
                 </div>
@@ -974,19 +974,19 @@ export default function Treatment() {
               </div>
 
               {/* Action Buttons for quick update */}
-              <div className="pt-3 border-t border-white/5 space-y-2 bg-slate-900/10">
+              <div className="pt-3 border-t border-white/5 space-y-2">
                 <div className="flex gap-2">
                   <select 
                     value={selectedRisk.status} 
                     onChange={(e) => quickUpdateStatus(selectedRisk.id, e.target.value)}
-                    className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-2.5 py-1.5 text-slate-300 cursor-pointer focus:outline-none flex-1"
+                    className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-2.5 py-1.5 text-white cursor-pointer focus:outline-none flex-1"
                   >
                     {RISK_STATUSES.map(s => <option key={s} value={s} className="bg-[#1a1d27] text-white">{s}</option>)}
                   </select>
                   <Button 
                     variant="outline" 
                     size="icon" 
-                    className="h-8 w-8 border-white/10 hover:bg-white/5 text-slate-300"
+                    className="h-8 w-8 border-white/10 hover:bg-white/5 hsl(var(--text-primary))"
                     onClick={() => setEditing(selectedRisk)}
                     title="Editar Tratamiento"
                   >
@@ -1019,9 +1019,9 @@ export default function Treatment() {
             </div>
           ) : (
             <div className="h-full flex flex-col items-center justify-center p-8 text-center border border-dashed border-white/5 rounded-2xl bg-white/[0.01]">
-              <ListChecks size={28} className="text-slate-600 animate-pulse mb-3" />
-              <p className="text-xs font-bold text-slate-400">Plan de Tratamiento</p>
-              <p className="text-[10px] text-slate-600 mt-1">Selecciona una amenaza en el panel izquierdo para desplegar y actualizar su plan estratégico.</p>
+              <ListChecks size={28} className="hsl(var(--text-muted)) animate-pulse mb-3" />
+              <p className="text-xs font-bold hsl(var(--text-secondary))">Plan de Tratamiento</p>
+              <p className="text-[10px] hsl(var(--text-muted)) mt-1">Selecciona una amenaza en el panel izquierdo para desplegar y actualizar su plan estratégico.</p>
             </div>
           )}
         </div>
@@ -1043,10 +1043,10 @@ export default function Treatment() {
               <form className="lg:col-span-2 space-y-4" onSubmit={handleSubmit(save)}>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="responseStrategy" className="text-xs text-slate-400 uppercase font-semibold">Estrategia de Respuesta (ISO 31000)</Label>
+                    <Label htmlFor="responseStrategy" className="text-xs hsl(var(--text-secondary)) uppercase font-semibold">Estrategia de Respuesta (ISO 31000)</Label>
                     <select 
                       id="responseStrategy"
-                      className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-2 text-slate-300 cursor-pointer focus:outline-none w-full"
+                      className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-2 hsl(var(--text-primary)) cursor-pointer focus:outline-none w-full"
                       {...register('responseStrategy')}
                     >
                       {RESPONSE_STRATEGIES.map((s) => (
@@ -1055,10 +1055,10 @@ export default function Treatment() {
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="status" className="text-xs text-slate-400 uppercase font-semibold">Estado del Tratamiento</Label>
+                    <Label htmlFor="status" className="text-xs hsl(var(--text-secondary)) uppercase font-semibold">Estado del Tratamiento</Label>
                     <select 
                       id="status"
-                      className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-2 text-slate-300 cursor-pointer focus:outline-none w-full"
+                      className="text-xs bg-[#12151e] border border-white/10 rounded-xl px-3 py-2 hsl(var(--text-primary)) cursor-pointer focus:outline-none w-full"
                       {...register('status')}
                     >
                       {RISK_STATUSES.map((s) => (
@@ -1070,7 +1070,7 @@ export default function Treatment() {
 
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <Label htmlFor="treatmentAction" className="text-xs text-slate-400 uppercase font-semibold">Acción de tratamiento (Controles Preventivos)</Label>
+                    <Label htmlFor="treatmentAction" className="text-xs hsl(var(--text-secondary)) uppercase font-semibold">Acción de tratamiento (Controles Preventivos)</Label>
                     {editing.classification === 'Crítico' && (
                       <span className="text-[9px] text-red-400 font-bold font-mono animate-pulse">* Requerido para riesgos críticos</span>
                     )}
@@ -1078,7 +1078,7 @@ export default function Treatment() {
                   <Textarea 
                     id="treatmentAction" 
                     rows={3} 
-                    className="bg-slate-900/40 border-white/10 focus:border-cyan-500/50 resize-y text-xs text-white"
+                    className="hsl(var(--surface-raised) / 0.4) border-white/10 focus:border-cyan-500/50 resize-y text-xs text-white"
                     {...register('treatmentAction')} 
                     placeholder="Describe las acciones concretas para mitigar o responder al riesgo..."
                   />
@@ -1086,23 +1086,23 @@ export default function Treatment() {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="reviewDate" className="text-xs text-slate-400 uppercase font-semibold">Fecha límite de revisión</Label>
-                    <Input id="reviewDate" type="date" className="bg-slate-900/40 border-white/10 focus:border-cyan-500/50 text-slate-300 text-xs" {...register('reviewDate')} />
+                    <Label htmlFor="reviewDate" className="text-xs hsl(var(--text-secondary)) uppercase font-semibold">Fecha límite de revisión</Label>
+                    <Input id="reviewDate" type="date" className="hsl(var(--surface-raised) / 0.4) border-white/10 focus:border-cyan-500/50 hsl(var(--text-primary)) text-xs" {...register('reviewDate')} />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="owner" className="text-xs text-slate-400 uppercase font-semibold">Líder de Mitigación (Owner)</Label>
-                    <Input id="owner" className="bg-slate-900/40 border-white/10 focus:border-cyan-500/50 text-slate-300 text-xs" {...register('owner')} placeholder="Nombre del líder a cargo" />
+                    <Label htmlFor="owner" className="text-xs hsl(var(--text-secondary)) uppercase font-semibold">Líder de Mitigación (Owner)</Label>
+                    <Input id="owner" className="hsl(var(--surface-raised) / 0.4) border-white/10 focus:border-cyan-500/50 hsl(var(--text-primary)) text-xs" {...register('owner')} placeholder="Nombre del líder a cargo" />
                   </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="evidence" className="text-xs text-slate-400 uppercase font-semibold">Evidencia de Implementación</Label>
-                    <Textarea id="evidence" rows={3} className="bg-slate-900/40 border-white/10 resize-y text-xs text-white" {...register('evidence')} placeholder="Métricas, auditorías, enlaces o pruebas de que el control fue aplicado..." />
+                    <Label htmlFor="evidence" className="text-xs hsl(var(--text-secondary)) uppercase font-semibold">Evidencia de Implementación</Label>
+                    <Textarea id="evidence" rows={3} className="hsl(var(--surface-raised) / 0.4) border-white/10 resize-y text-xs text-white" {...register('evidence')} placeholder="Métricas, auditorías, enlaces o pruebas de que el control fue aplicado..." />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="expectedResult" className="text-xs text-slate-400 uppercase font-semibold">Resultado de Mitigación Esperado</Label>
-                    <Textarea id="expectedResult" rows={3} className="bg-slate-900/40 border-white/10 resize-y text-xs text-white" {...register('expectedResult')} placeholder="Describe la reducción esperada del nivel de impacto o probabilidad..." />
+                    <Label htmlFor="expectedResult" className="text-xs hsl(var(--text-secondary)) uppercase font-semibold">Resultado de Mitigación Esperado</Label>
+                    <Textarea id="expectedResult" rows={3} className="hsl(var(--surface-raised) / 0.4) border-white/10 resize-y text-xs text-white" {...register('expectedResult')} placeholder="Describe la reducción esperada del nivel de impacto o probabilidad..." />
                   </div>
                 </div>
 
@@ -1120,7 +1120,7 @@ export default function Treatment() {
                       Guía ISO 31000
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="pt-3 space-y-3 text-xs text-slate-300 leading-relaxed max-h-[45vh] overflow-y-auto custom-scrollbar">
+                  <CardContent className="pt-3 space-y-3 text-xs text-white leading-relaxed max-h-[45vh] overflow-y-auto custom-scrollbar">
                     <p className="text-slate-400 text-[10.5px]">
                       Pautas estratégicas para el tratamiento según la ISO 31000:
                     </p>
@@ -1129,7 +1129,7 @@ export default function Treatment() {
                       {Object.keys(STRATEGY_DETAILS).map(s => {
                         const strat = STRATEGY_DETAILS[s];
                         return (
-                          <div key={s} className="bg-slate-950/20 p-2.5 rounded-xl border border-white/5">
+                          <div key={s} className="bg-[#080c14]/20 p-2.5 rounded-xl border border-white/5">
                             <strong className="text-cyan-400 flex items-center gap-1">
                               <strat.icon size={11} /> {s}
                             </strong>

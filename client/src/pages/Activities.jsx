@@ -34,7 +34,7 @@ const CATEGORY_ICONS = {
 const chartConfig = {
   total: {
     label: "Actividades",
-    color: "hsl(var(--primary))",
+    color: "text-[hsl(var(--primary))]",
   },
   riesgo: {
     label: "Riesgo (P×I)",
@@ -97,14 +97,24 @@ export default function Activities() {
     }
   }, [activeProjectId]);
 
+  const loadAllMappings = useCallback(async () => {
+    if (!activeProjectId) return setActivityResources({});
+    try {
+      const res = await api.get(`/resources/mappings?projectId=${activeProjectId}`);
+      setActivityResources(res || {});
+    } catch (e) {
+      console.error(e);
+    }
+  }, [activeProjectId]);
+
   useEffect(() => {
     if (activeProjectId) {
       reload();
       loadAllResources();
+      loadAllMappings();
       setSelectedActivityId(null);
-      setActivityResources({});
     }
-  }, [activeProjectId, reload, loadAllResources]);
+  }, [activeProjectId, reload, loadAllResources, loadAllMappings]);
 
   const loadActivityResources = useCallback(async (activityId) => {
     setLoadingResources(prev => ({ ...prev, [activityId]: true }));
@@ -117,17 +127,6 @@ export default function Activities() {
       setLoadingResources(prev => ({ ...prev, [activityId]: false }));
     }
   }, []);
-
-  // Background fetch of resources to support mapping filters correctly
-  useEffect(() => {
-    if (items.length > 0) {
-      items.forEach(a => {
-        if (activityResources[a.id] === undefined && loadingResources[a.id] !== true) {
-          loadActivityResources(a.id);
-        }
-      });
-    }
-  }, [items, activityResources, loadingResources, loadActivityResources]);
 
   const mapCategoryToType = (category) => {
     if (category === 'RRHH') return 'human';
@@ -330,12 +329,12 @@ export default function Activities() {
               <span className="font-mono text-[9px] font-bold text-cyan-400/90 tracking-wider shrink-0 select-none">
                 {a.code}
               </span>
-              <p className="text-xs font-medium text-slate-200 truncate max-w-[150px] sm:max-w-[200px]" title={a.name}>
+              <p className="text-xs font-medium text-[hsl(var(--text-primary))] truncate max-w-[150px] sm:max-w-[200px]" title={a.name}>
                 {a.name}
               </p>
             </div>
             {/* Very compact, small subtitle */}
-            <span className="text-[8px] text-slate-500 font-bold block mt-0.5 tracking-wider uppercase select-none">
+            <span className="text-[8px] text-[hsl(var(--text-muted))] font-bold block mt-0.5 tracking-wider uppercase select-none">
               {a.month} · {a.domain_pmbok}
             </span>
           </div>
@@ -353,14 +352,14 @@ export default function Activities() {
           {/* Simple ghost action button */}
           <div className="flex items-center">
             {loadingResources[a.id] ? (
-              <span className="text-[9px] text-slate-500 animate-pulse font-mono font-bold">...</span>
+              <span className="text-[9px] text-[hsl(var(--text-muted))] animate-pulse font-mono font-bold">...</span>
             ) : hasResources ? (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setManagingActivity(a);
                 }}
-                className="text-slate-500 hover:text-cyan-400 p-1.5 rounded-lg transition-colors cursor-pointer"
+                className="text-[hsl(var(--text-muted))] hover:text-[hsl(var(--primary))] p-1.5 rounded-lg transition-colors cursor-pointer"
                 title={`Recursos: ${resourcesCount}`}
               >
                 <Settings size={12} />
@@ -388,10 +387,10 @@ export default function Activities() {
     const { critica, media, baja, sinMapear } = getActivitiesByZone(activityList);
     
     return (
-      <div className="space-y-4 p-4 bg-slate-950/5">
+      <div className="space-y-4 p-4 bg-[hsl(var(--surface-base)/0.05)]">
         {critica.length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-[10px] font-bold text-slate-400 tracking-wider flex items-center gap-2 select-none uppercase">
+            <h4 className="text-[10px] font-bold text-[hsl(var(--text-secondary))] tracking-wider flex items-center gap-2 select-none uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_5px_#ef4444]" />
               Zona Crítica ({critica.length})
             </h4>
@@ -403,7 +402,7 @@ export default function Activities() {
 
         {media.length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-[10px] font-bold text-slate-400 tracking-wider flex items-center gap-2 select-none uppercase">
+            <h4 className="text-[10px] font-bold text-[hsl(var(--text-secondary))] tracking-wider flex items-center gap-2 select-none uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-yellow-500 shadow-[0_0_5px_#eab308]" />
               Zona Media ({media.length})
             </h4>
@@ -415,7 +414,7 @@ export default function Activities() {
 
         {baja.length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-[10px] font-bold text-slate-400 tracking-wider flex items-center gap-2 select-none uppercase">
+            <h4 className="text-[10px] font-bold text-[hsl(var(--text-secondary))] tracking-wider flex items-center gap-2 select-none uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_#10b981]" />
               Zona Baja ({baja.length})
             </h4>
@@ -427,8 +426,8 @@ export default function Activities() {
 
         {sinMapear.length > 0 && (
           <div className="space-y-2">
-            <h4 className="text-[10px] font-bold text-slate-400 tracking-wider flex items-center gap-2 select-none uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-500 border border-dashed" />
+            <h4 className="text-[10px] font-bold text-[hsl(var(--text-secondary))] tracking-wider flex items-center gap-2 select-none uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--risk-neutral))] border border-dashed" />
               Zona Pendiente de Mapeo ({sinMapear.length})
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -512,11 +511,11 @@ export default function Activities() {
             <span className="font-mono text-[9px] font-black text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/15">
               {selectedActivity.code}
             </span>
-            <span className="text-[10px] uppercase font-black tracking-widest text-slate-400">Detalle Actividad</span>
+            <span className="text-[10px] uppercase font-black tracking-widest text-[hsl(var(--text-secondary))]">Detalle Actividad</span>
           </div>
           <button 
             onClick={() => setSelectedActivityId(null)}
-            className="text-slate-500 hover:text-white transition-colors cursor-pointer text-sm"
+            className="text-[hsl(var(--text-muted))] hover:text-white transition-colors cursor-pointer text-sm"
           >
             ✕
           </button>
@@ -525,31 +524,31 @@ export default function Activities() {
         {/* Name and Description */}
         <div className="space-y-1.5">
           <h3 className="text-xs font-bold text-white leading-relaxed">{selectedActivity.name}</h3>
-          <p className="text-[10px] text-slate-400 leading-normal">{selectedActivity.description || 'Sin descripción o bitácora de actividad.'}</p>
+          <p className="text-[10px] text-[hsl(var(--text-secondary))] leading-normal">{selectedActivity.description || 'Sin descripción o bitácora de actividad.'}</p>
         </div>
 
         {/* Planificación */}
         <div className="bg-[#121624]/40 rounded-xl border border-white/5 p-3 space-y-2 font-medium">
-          <h4 className="text-[9px] uppercase font-black text-slate-500 tracking-widest flex items-center gap-1.5 pb-1 border-b border-white/5">
+          <h4 className="text-[9px] uppercase font-black text-[hsl(var(--text-muted))] tracking-widest flex items-center gap-1.5 pb-1 border-b border-white/5">
             <Calendar size={12} className="text-cyan-400" /> Planificación y Contexto
           </h4>
           <div className="space-y-1.5 pt-1 text-[10.5px]">
             <p className="flex justify-between">
-              <span className="text-slate-500 font-semibold">Cronograma:</span>
-              <span className="text-slate-200">{selectedActivity.month}</span>
+              <span className="text-[hsl(var(--text-muted))] font-semibold">Cronograma:</span>
+              <span className="text-[hsl(var(--text-primary))]">{selectedActivity.month}</span>
             </p>
             <p className="flex justify-between">
-              <span className="text-slate-500 font-semibold">Entregable:</span>
-              <span className="text-slate-200">Entregable {selectedActivity.deliverable}</span>
+              <span className="text-[hsl(var(--text-muted))] font-semibold">Entregable:</span>
+              <span className="text-[hsl(var(--text-primary))]">Entregable {selectedActivity.deliverable}</span>
             </p>
             <p className="flex justify-between">
-              <span className="text-slate-500 font-semibold">Objetivo ID:</span>
+              <span className="text-[hsl(var(--text-muted))] font-semibold">Objetivo ID:</span>
               <span className="font-mono text-cyan-400 font-bold">{selectedActivity.objective || '—'}</span>
             </p>
             {selectedActivity.role_main && (
               <p className="flex justify-between">
-                <span className="text-slate-500 font-semibold">Líder / PM:</span>
-                <span className="text-slate-200">{selectedActivity.role_main}</span>
+                <span className="text-[hsl(var(--text-muted))] font-semibold">Líder / PM:</span>
+                <span className="text-[hsl(var(--text-primary))]">{selectedActivity.role_main}</span>
               </p>
             )}
           </div>
@@ -562,15 +561,15 @@ export default function Activities() {
           </h4>
           <div className="space-y-2 pt-1 text-[10.5px]">
             <p className="flex justify-between">
-              <span className="text-slate-500 font-semibold">Dominio PMBOK:</span>
-              <span className="text-slate-200">{selectedActivity.domain_pmbok}</span>
+              <span className="text-[hsl(var(--text-muted))] font-semibold">Dominio PMBOK:</span>
+              <span className="text-[hsl(var(--text-primary))]">{selectedActivity.domain_pmbok}</span>
             </p>
             <p className="flex justify-between">
-              <span className="text-slate-500 font-semibold">Cálculo de Criticidad:</span>
-              <span className="text-slate-200 font-mono">P: {selectedActivity.probability} × I: {selectedActivity.impact}</span>
+              <span className="text-[hsl(var(--text-muted))] font-semibold">Cálculo de Criticidad:</span>
+              <span className="text-[hsl(var(--text-primary))] font-mono">P: {selectedActivity.probability} × I: {selectedActivity.impact}</span>
             </p>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-semibold">Nivel Total:</span>
+              <span className="text-[hsl(var(--text-muted))] font-semibold">Nivel Total:</span>
               <span className="font-mono font-black text-white px-2 py-0.5 rounded text-[10px]" style={{
                 backgroundColor: selectedActivity.level >= 15 ? 'rgba(239, 68, 68, 0.15)' : selectedActivity.level >= 10 ? 'rgba(249, 115, 22, 0.15)' : 'rgba(16, 185, 129, 0.15)',
                 color: riskColor
@@ -588,9 +587,9 @@ export default function Activities() {
           </h4>
           
           {loadingResources[selectedActivity.id] ? (
-            <p className="text-[10px] text-slate-500 animate-pulse font-mono">Cargando...</p>
+            <p className="text-[10px] text-[hsl(var(--text-muted))] animate-pulse font-mono">Cargando...</p>
           ) : !hasResources ? (
-            <p className="text-[10px] text-slate-500 italic flex items-center gap-1.5 select-none pt-1">
+            <p className="text-[10px] text-[hsl(var(--text-muted))] italic flex items-center gap-1.5 select-none pt-1">
               <AlertCircle size={12} /> Sin recursos vinculados.
             </p>
           ) : (
@@ -599,7 +598,7 @@ export default function Activities() {
                 <Badge 
                   key={res.id} 
                   variant="outline" 
-                  className="text-[9px] bg-slate-900/60 border-white/5 hover:border-cyan-500/20 text-slate-300 py-0.5 px-2 font-normal"
+                  className="text-[9px] bg-[hsl(var(--surface-raised)/0.6)] border-white/5 hover:border-cyan-500/20 text-[hsl(var(--text-primary))] py-0.5 px-2 font-normal"
                 >
                   <span className="mr-1">{CATEGORY_ICONS[res.category] || '📦'}</span> 
                   {res.name}
@@ -671,7 +670,7 @@ export default function Activities() {
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
             <Layers className="text-cyan-400" size={24} /> Actividades del Proyecto
           </h1>
-          <p className="text-slate-400 text-sm">Metodología Híbrida · {items.length} actividades planificadas</p>
+          <p className="text-[hsl(var(--text-secondary))] text-sm">Metodología Híbrida · {items.length} actividades planificadas</p>
         </div>
         {summary?.byLevel && (
           <div className="flex flex-wrap gap-2">
@@ -691,7 +690,7 @@ export default function Activities() {
       {chartData.length > 0 && (
         <Card className="border-white/5 bg-[#090d1a]/40 backdrop-blur-xl">
           <CardContent className="p-5">
-            <p className="text-xs uppercase font-bold tracking-wider text-slate-400 mb-4">Actividades y Nivel de Riesgo Acumulado por Entregable</p>
+            <p className="text-xs uppercase font-bold tracking-wider text-[hsl(var(--text-secondary))] mb-4">Actividades y Nivel de Riesgo Acumulado por Entregable</p>
             <ChartContainer config={chartConfig} className="h-[200px] w-full">
               <BarChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -748,25 +747,25 @@ export default function Activities() {
             </div>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center gap-1 bg-slate-950/40 p-1 border border-white/5 rounded-xl self-end lg:self-auto shrink-0 w-fit">
-              <span className="text-[9px] uppercase font-black text-slate-500 pl-2 pr-1.5 tracking-widest select-none">Vista:</span>
+            <div className="flex items-center gap-1 bg-[hsl(var(--surface-base)/0.4)] p-1 border border-white/5 rounded-xl self-end lg:self-auto shrink-0 w-fit">
+              <span className="text-[9px] uppercase font-black text-[hsl(var(--text-muted))] pl-2 pr-1.5 tracking-widest select-none">Vista:</span>
               <button
                 type="button"
-                className={`h-7 text-[10px] px-3 font-bold rounded-lg transition-colors cursor-pointer ${viewMode === 'cluster' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 border border-transparent hover:text-white'}`}
+                className={`h-7 text-[10px] px-3 font-bold rounded-lg transition-colors cursor-pointer ${viewMode === 'cluster' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20' : 'text-[hsl(var(--text-secondary))] border border-transparent hover:text-white'}`}
                 onClick={() => setViewMode('cluster')}
               >
                 Cluster
               </button>
               <button
                 type="button"
-                className={`h-7 text-[10px] px-3 font-bold rounded-lg transition-colors cursor-pointer ${viewMode === 'timeline' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 border border-transparent hover:text-white'}`}
+                className={`h-7 text-[10px] px-3 font-bold rounded-lg transition-colors cursor-pointer ${viewMode === 'timeline' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20' : 'text-[hsl(var(--text-secondary))] border border-transparent hover:text-white'}`}
                 onClick={() => setViewMode('timeline')}
               >
                 Línea de Tiempo
               </button>
               <button
                 type="button"
-                className={`h-7 text-[10px] px-3 font-bold rounded-lg transition-colors cursor-pointer ${viewMode === 'compacto' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20' : 'text-slate-400 border border-transparent hover:text-white'}`}
+                className={`h-7 text-[10px] px-3 font-bold rounded-lg transition-colors cursor-pointer ${viewMode === 'compacto' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20' : 'text-[hsl(var(--text-secondary))] border border-transparent hover:text-white'}`}
                 onClick={() => setViewMode('compacto')}
               >
                 Compacto
@@ -779,7 +778,7 @@ export default function Activities() {
             
             {/* Filter by Classification */}
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 font-bold select-none">Criticidad:</span>
+              <span className="text-[hsl(var(--text-muted))] font-bold select-none">Criticidad:</span>
               <div className="flex gap-1.5">
                 {['', 'Bajo', 'Medio', 'Alto', 'Crítico'].map((c) => (
                   <button
@@ -788,7 +787,7 @@ export default function Activities() {
                     className={`px-2.5 py-1 rounded-lg text-[9px] font-bold border transition-all cursor-pointer ${
                       filters.classification === c
                         ? 'bg-cyan-500/15 border-cyan-500/20 text-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.1)]'
-                        : 'bg-white/5 border-transparent text-slate-400 hover:text-slate-200'
+                        : 'bg-white/5 border-transparent text-[hsl(var(--text-secondary))] hover:text-[hsl(var(--text-primary))]'
                     }`}
                   >
                     {c || 'Todos'}
@@ -799,7 +798,7 @@ export default function Activities() {
 
             {/* Filter by Mapping Status */}
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 font-bold select-none">Mapeo:</span>
+              <span className="text-[hsl(var(--text-muted))] font-bold select-none">Mapeo:</span>
               <div className="flex gap-1.5">
                 {[
                   { value: '', label: 'Todos' },
@@ -812,7 +811,7 @@ export default function Activities() {
                     className={`px-2.5 py-1 rounded-lg text-[9px] font-bold border transition-all cursor-pointer ${
                       filters.mappingStatus === st.value
                         ? 'bg-cyan-500/15 border-cyan-500/20 text-cyan-400'
-                        : 'bg-white/5 border-transparent text-slate-400 hover:text-slate-200'
+                        : 'bg-white/5 border-transparent text-[hsl(var(--text-secondary))] hover:text-[hsl(var(--text-primary))]'
                     }`}
                   >
                     {st.label}
@@ -823,7 +822,7 @@ export default function Activities() {
 
             {/* Sort by option */}
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 font-bold select-none">Ordenar:</span>
+              <span className="text-[hsl(var(--text-muted))] font-bold select-none">Ordenar:</span>
               <div className="flex gap-1.5">
                 {[
                   { value: 'risk-desc', label: 'Mayor Riesgo' },
@@ -836,7 +835,7 @@ export default function Activities() {
                     className={`px-2.5 py-1 rounded-lg text-[9px] font-bold border transition-all cursor-pointer ${
                       sortBy === s.value
                         ? 'bg-cyan-500/15 border-cyan-500/20 text-cyan-400'
-                        : 'bg-white/5 border-transparent text-slate-400 hover:text-slate-200'
+                        : 'bg-white/5 border-transparent text-[hsl(var(--text-secondary))] hover:text-[hsl(var(--text-primary))]'
                     }`}
                   >
                     {s.label}
@@ -847,8 +846,8 @@ export default function Activities() {
 
             {/* Group by option */}
             <div className="flex items-center gap-2 ml-auto lg:ml-0">
-              <span className="text-slate-500 font-bold select-none font-mono text-[9px] uppercase tracking-wider">Agrupar por:</span>
-              <div className="flex bg-slate-950/20 border border-white/5 rounded-lg p-0.5">
+              <span className="text-[hsl(var(--text-muted))] font-bold select-none font-mono text-[9px] uppercase tracking-wider">Agrupar por:</span>
+              <div className="flex bg-[hsl(var(--surface-base)/0.2)] border border-white/5 rounded-lg p-0.5">
                 {[
                   { value: 'deliverable', label: 'Entregable' },
                   { value: 'month', label: 'Mes' },
@@ -861,7 +860,7 @@ export default function Activities() {
                     className={`px-2 py-0.5 rounded text-[9.5px] font-bold transition-all cursor-pointer ${
                       groupBy === grp.value
                         ? 'bg-cyan-500/10 text-cyan-400'
-                        : 'text-slate-400 hover:text-slate-200'
+                        : 'text-[hsl(var(--text-secondary))] hover:text-[hsl(var(--text-primary))]'
                     }`}
                   >
                     {grp.label}
@@ -880,7 +879,7 @@ export default function Activities() {
         {/* Accordions Area */}
         <div className="flex-1 w-full space-y-4">
           {loading ? (
-            <div className="text-center py-16 text-slate-400 flex flex-col items-center justify-center gap-2">
+            <div className="text-center py-16 text-[hsl(var(--text-secondary))] flex flex-col items-center justify-center gap-2">
               <RefreshCw className="animate-spin text-cyan-400" size={26} />
               <span className="font-medium">Cargando activities cluster...</span>
             </div>
@@ -921,7 +920,7 @@ export default function Activities() {
                           <div className={`w-7.5 h-7.5 rounded-lg flex items-center justify-center border transition-all ${
                             isGroupOpen 
                               ? 'bg-cyan-500/10 border-cyan-500/35 text-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.15)]' 
-                              : 'bg-white/5 border-white/5 text-slate-400'
+                              : 'bg-white/5 border-white/5 text-[hsl(var(--text-secondary))]'
                           }`}>
                             {isGroupOpen ? <FolderOpen size={13} /> : <Folder size={13} />}
                           </div>
@@ -929,7 +928,7 @@ export default function Activities() {
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
                               <h3 className="text-xs font-black text-white truncate max-w-[160px] sm:max-w-none">{group.name}</h3>
-                              <span className="text-[8.5px] font-mono font-bold text-slate-400 bg-white/5 border border-white/5 px-1.5 py-0.2 rounded-md shrink-0 select-none">
+                              <span className="text-[8.5px] font-mono font-bold text-[hsl(var(--text-secondary))] bg-white/5 border border-white/5 px-1.5 py-0.2 rounded-md shrink-0 select-none">
                                 {group.items.length} act.
                               </span>
                               <span className={`text-[8px] font-bold px-1.5 py-0.2 rounded border uppercase tracking-wider shrink-0 select-none ${statusColorClass}`}>
@@ -942,7 +941,7 @@ export default function Activities() {
                         <div className="flex items-center gap-4">
                           {/* Risk Accumulated Counter */}
                           <div className="flex items-center gap-1.5 font-mono text-[9px] select-none">
-                            <span className="text-[8px] uppercase font-black text-slate-500 tracking-wider hidden sm:inline">Riesgo acumulado:</span>
+                            <span className="text-[8px] uppercase font-black text-[hsl(var(--text-muted))] tracking-wider hidden sm:inline">Riesgo acumulado:</span>
                             <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg border ${
                               group.totalRisk >= 150 
                                 ? 'bg-red-500/10 border-red-500/25 text-red-400 shadow-[0_0_8px_rgba(239,68,68,0.15)]' 
@@ -956,16 +955,16 @@ export default function Activities() {
                             </span>
                           </div>
                           
-                          <div className="text-slate-500 w-4 flex justify-end shrink-0">
+                          <div className="text-[hsl(var(--text-muted))] w-4 flex justify-end shrink-0">
                             {isGroupOpen ? <ChevronUp size={13} className="text-cyan-400" /> : <ChevronDown size={13} />}
                           </div>
                         </div>
                       </div>
 
                       {/* Visual Risk Traffic Lights */}
-                      <div className="flex flex-wrap items-center gap-y-1.5 gap-x-4 text-[9.5px] text-slate-400 font-semibold px-4 pb-3 border-b border-white/5 select-none bg-slate-950/15">
+                      <div className="flex flex-wrap items-center gap-y-1.5 gap-x-4 text-[9.5px] text-[hsl(var(--text-secondary))] font-semibold px-4 pb-3 border-b border-white/5 select-none bg-[hsl(var(--surface-base)/0.15)]">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[8px] text-slate-500 font-bold uppercase tracking-wider">Crítico:</span>
+                          <span className="text-[8px] text-[hsl(var(--text-muted))] font-bold uppercase tracking-wider">Crítico:</span>
                           <span className="flex gap-0.5">
                             {Array.from({ length: 4 }).map((_, i) => (
                               <span 
@@ -973,7 +972,7 @@ export default function Activities() {
                                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                                   i < stats.criticoCount 
                                     ? 'bg-red-500 shadow-[0_0_5px_#ef4444]' 
-                                    : 'bg-slate-800'
+                                    : 'bg-[hsl(var(--surface-overlay))]'
                                 }`} 
                               />
                             ))}
@@ -982,7 +981,7 @@ export default function Activities() {
                         </div>
                         
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[8px] text-slate-500 font-bold uppercase tracking-wider">Medio:</span>
+                          <span className="text-[8px] text-[hsl(var(--text-muted))] font-bold uppercase tracking-wider">Medio:</span>
                           <span className="flex gap-0.5">
                             {Array.from({ length: 4 }).map((_, i) => (
                               <span 
@@ -990,7 +989,7 @@ export default function Activities() {
                                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                                   i < stats.medioCount 
                                     ? 'bg-yellow-500 shadow-[0_0_5px_#eab308]' 
-                                    : 'bg-slate-800'
+                                    : 'bg-[hsl(var(--surface-overlay))]'
                                 }`} 
                               />
                             ))}
@@ -999,7 +998,7 @@ export default function Activities() {
                         </div>
 
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[8px] text-slate-500 font-bold uppercase tracking-wider">Bajo:</span>
+                          <span className="text-[8px] text-[hsl(var(--text-muted))] font-bold uppercase tracking-wider">Bajo:</span>
                           <span className="flex gap-0.5">
                             {Array.from({ length: 4 }).map((_, i) => (
                               <span 
@@ -1007,7 +1006,7 @@ export default function Activities() {
                                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                                   i < stats.bajoCount 
                                     ? 'bg-emerald-500 shadow-[0_0_5px_#10b981]' 
-                                    : 'bg-slate-800'
+                                    : 'bg-[hsl(var(--surface-overlay))]'
                                 }`} 
                               />
                             ))}
@@ -1016,35 +1015,35 @@ export default function Activities() {
                         </div>
 
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[8px] text-slate-500 font-bold uppercase tracking-wider">Sin Mapear:</span>
+                          <span className="text-[8px] text-[hsl(var(--text-muted))] font-bold uppercase tracking-wider">Sin Mapear:</span>
                           <span className="flex gap-0.5">
                             {Array.from({ length: 4 }).map((_, i) => (
                               <span 
                                 key={i} 
                                 className={`w-1.5 h-1.5 rounded-full border transition-all duration-300 ${
                                   i < stats.sinMapearCount 
-                                    ? 'bg-slate-600 border-slate-500 border-dashed' 
-                                    : 'bg-slate-800/20 border-slate-800 border-dashed'
+                                    ? 'bg-[hsl(var(--surface-overlay))] bg-[hsl(var(--risk-neutral))] border-dashed' 
+                                    : 'bg-[hsl(var(--surface-overlay)/0.2)] bg-[hsl(var(--surface-overlay))] border-dashed'
                                 }`} 
                               />
                             ))}
                           </span>
-                          <span className="text-slate-400 font-mono ml-0.5 text-[8.5px]">{stats.sinMapearCount}</span>
+                          <span className="text-[hsl(var(--text-secondary))] font-mono ml-0.5 text-[8.5px]">{stats.sinMapearCount}</span>
                         </div>
                       </div>
 
                       {/* Segmented Risk Distribution Bar */}
-                      <div className="h-0.8 w-full bg-slate-900 flex overflow-hidden">
+                      <div className="h-0.8 w-full bg-[hsl(var(--surface-raised))] flex overflow-hidden">
                         <div className="bg-red-500 h-full transition-all duration-500" style={{ width: `${stats.criticoPct}%` }} />
                         <div className="bg-yellow-500 h-full transition-all duration-500" style={{ width: `${stats.medioPct}%` }} />
                         <div className="bg-emerald-500 h-full transition-all duration-500" style={{ width: `${stats.bajoPct}%` }} />
-                        <div className="bg-slate-700 h-full border-l border-slate-900/50 transition-all duration-500" style={{ width: `${stats.sinMapearPct}%` }} />
+                        <div className="bg-[hsl(var(--surface-overlay))] h-full border-l bg-[hsl(var(--surface-raised)/0.5)] transition-all duration-500" style={{ width: `${stats.sinMapearPct}%` }} />
                       </div>
                     </div>
 
                     {/* Accordion content */}
                     {isGroupOpen && (
-                      <div className="bg-slate-950/20 animate-fade-in-slide">
+                      <div className="bg-[hsl(var(--surface-base)/0.2)] animate-fade-in-slide">
                         {renderTable(group.items)}
                       </div>
                     )}
@@ -1067,11 +1066,11 @@ export default function Activities() {
             <DialogTitle className="flex items-center gap-2 text-white">
               <Package className="text-cyan-400" size={18} /> Asignar Recursos — {managingActivity?.code}
             </DialogTitle>
-            <p className="text-xs text-slate-400 pt-1 leading-normal">{managingActivity?.name}</p>
+            <p className="text-xs text-[hsl(var(--text-secondary))] pt-1 leading-normal">{managingActivity?.name}</p>
           </DialogHeader>
           
           <div className="space-y-4 pt-2">
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-[hsl(var(--text-primary))] leading-relaxed">
               Asocia los recursos humanos, técnicos y físicos necesarios para el desarrollo de esta actividad:
             </p>
             
@@ -1081,7 +1080,7 @@ export default function Activities() {
                 if (categoryRes.length === 0) return null;
                 return (
                   <div key={category} className="space-y-1.5">
-                    <h5 className="text-[9px] uppercase font-bold text-slate-500 tracking-wider border-b border-white/5 pb-1 select-none">
+                    <h5 className="text-[9px] uppercase font-bold text-[hsl(var(--text-muted))] tracking-wider border-b border-white/5 pb-1 select-none">
                       {category === 'RRHH' ? '👥 Recursos Humanos' : category === 'FisicoTecnologico' ? '🖥️ Equipamiento Físico/Tecnológico' : category === 'FisicoMaterial' ? '📦 Materiales/Espacios Físicos' : '☁️ Licencias y Servicios Virtuales'}
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1093,7 +1092,7 @@ export default function Activities() {
                             className={`flex items-start gap-2.5 p-2 rounded border text-xs cursor-pointer transition-all duration-200 ${
                               isLinked 
                                 ? 'bg-cyan-500/5 border-cyan-500/30 text-white' 
-                                : 'bg-[#0f111a] border-white/5 hover:bg-white/5 text-slate-400 hover:border-white/10'
+                                : 'bg-[#0f111a] border-white/5 hover:bg-white/5 text-[hsl(var(--text-secondary))] hover:border-white/10'
                             }`}
                           >
                             <input 
@@ -1104,7 +1103,7 @@ export default function Activities() {
                             />
                             <div>
                               <span className="font-semibold block">{res.name}</span>
-                              <span className="font-mono text-[9px] text-slate-500 block mt-0.5">{res.code}</span>
+                              <span className="font-mono text-[9px] text-[hsl(var(--text-muted))] block mt-0.5">{res.code}</span>
                             </div>
                           </label>
                         );

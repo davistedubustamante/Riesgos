@@ -40,8 +40,8 @@ export function computeRisk(p, i) {
 }
 
 export const CLASSIFICATION_STYLE = {
-  Bajo:    'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25',
-  Medio:   'bg-yellow-500/15 text-yellow-300 border border-yellow-500/25',
-  Alto:    'bg-orange-500/15 text-orange-300 border border-orange-500/25',
-  Crítico: 'bg-red-500/15 text-red-300 border border-red-500/25',
+  Bajo:    'badge badge-low',
+  Medio:   'badge badge-medium',
+  Alto:    'badge badge-high',
+  Crítico: 'badge badge-critical',
 };

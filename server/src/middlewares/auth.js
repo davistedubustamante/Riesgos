@@ -15,10 +15,17 @@ export async function attachUser(req, _res, next) {
       req.sessionId = sessionId;
       req.user = session.user;
     }
+    next();
   } catch (e) {
+    // Si la base de datos falla (ej. conexiones agotadas), no invalidamos la sesión.
+    // Propagamos el error para que la API retorne un 500 y conserve el estado de login.
+    const isDbErr = e.code === 'ER_CON_COUNT_ERROR' || e.message.includes('conn') || e.message.includes('connection');
+    if (isDbErr) {
+      return next(e);
+    }
     req.user = null;
+    next();
   }
-  next();
 }
 
 export function requireAuth(req, res, next) {

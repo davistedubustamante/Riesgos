@@ -54,12 +54,12 @@ const STATUS_STYLE = {
 function Sparkline({ data, color }) {
   const max = Math.max(...data, 1);
   return (
-    <div className="flex items-end gap-0.5 h-5">
+    <div className="flex items-end gap-[1.5px] h-5">
       {data.map((v, i) => (
-        <div key={i} className="w-1.5 rounded-full transition-all"
+        <div key={i} className="w-[3px] rounded-full transition-all"
           style={{
-            height: `${Math.max(3, (v / max) * 20)}px`,
-            background: i === data.length - 1 ? color : `${color}40`,
+            height: `${Math.max(3, (v / max) * 18)}px`,
+            background: i === data.length - 1 ? color : `${color}30`,
           }}
         />
       ))}
@@ -70,17 +70,20 @@ function Sparkline({ data, color }) {
 // ─── Metric Tile ──────────────────────────────────────────────────────────────
 function MetricTile({ icon: Icon, value, label, color, spark }) {
   return (
-    <div className="bg-[#0b0c13]/85 border border-white/5 rounded-2xl p-3 flex flex-col gap-2 transition-all hover:border-white/10 hover:bg-[#10121d]/90 shadow-md">
-      <div className="flex items-start justify-between">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-          style={{ background: `${color}18`, border: `1px solid ${color}30` }}>
-          <Icon size={13} style={{ color }} />
+    <div className="group relative overflow-hidden rounded-[16px] border border-[#1e293b]/60 bg-[#0d1527] p-4 flex flex-col gap-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-700/60 hover:shadow-[0_15px_30px_-15px_rgba(0,0,0,0.8)]">
+      {/* Glow corner indicator */}
+      <div className="absolute top-0 right-0 w-16 h-16 rounded-full blur-[25px] opacity-[0.03] group-hover:opacity-[0.06] transition-all duration-500 pointer-events-none" style={{ background: color }} />
+      
+      <div className="flex items-center justify-between">
+        <div className="text-slate-400 group-hover:text-white transition-colors duration-300">
+          <Icon size={16} className="stroke-[1.5]" style={{ color }} />
         </div>
         {spark && <Sparkline data={spark} color={color} />}
       </div>
-      <div>
-        <p className="text-xl font-black text-white leading-none">{value}</p>
-        <p className="text-[9px] uppercase font-bold text-[#8a8f98] tracking-widest mt-0.5">{label}</p>
+      
+      <div className="mt-1">
+        <p className="text-2xl font-black text-white font-sans tracking-tight">{value}</p>
+        <p className="text-[9px] uppercase font-bold text-slate-500 tracking-[0.16em] font-mono mt-0.5">{label}</p>
       </div>
     </div>
   );
@@ -213,52 +216,62 @@ function ProjectCard({ project, isActive, onSelect, onEdit, onDelete }) {
 
   return (
     <div
-      className={`bg-[#0b0c13]/80 border rounded-2xl p-4 cursor-pointer transition-all duration-200 hover:border-white/10 hover:bg-[#10121d]/95 group ${
-        isActive ? 'border-cyan-500/35 shadow-[0_2px_12px_rgba(6,182,212,0.08)]' : 'border-white/5'
+      className={`group relative overflow-hidden rounded-[16px] border bg-[#0d1527] p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 ${
+        isActive 
+          ? 'border-cyan-500/40 shadow-[0_20px_35px_-15px_rgba(0,0,0,0.8),_0_0_15px_-3px_rgba(6,182,212,0.06)]' 
+          : 'border-[#1e293b]/60 hover:border-slate-700/60 hover:shadow-[0_20px_35px_-15px_rgba(0,0,0,0.8)]'
       }`}
       onClick={() => onSelect(project.id)}
     >
+      {/* Decorative top border highlight on active */}
+      {isActive && (
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-80" />
+      )}
+
       {/* Top row */}
-      <div className="flex items-start justify-between gap-2 mb-2">
+      <div className="flex items-start justify-between gap-3 mb-2 relative z-10">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 mb-0.5">
-            <span className="text-sm font-bold text-white truncate">{project.name}</span>
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <span className="text-[15px] font-extrabold text-white tracking-tight truncate group-hover:text-cyan-400 transition-colors">
+              {project.name}
+            </span>
             {isActive && (
-              <Badge className="text-[8px] px-1.5 py-0 h-4 font-bold shrink-0 animate-pulse"
-                style={{ background: '#06b6d415', color: '#06b6d4', border: '1px solid #06b6d430' }}>
+              <Badge className="text-[8px] px-1.5 py-0 h-4 font-bold shrink-0 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 animate-pulse">
                 ACTIVO
               </Badge>
             )}
           </div>
-          <div className="flex items-center gap-1.5">
-            <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-normal bg-white/[0.04] border-white/[0.08] text-[#8a8f98]">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-normal bg-white/[0.02] border-slate-800 text-slate-400">
               {project.type || 'Sin tipo'}
             </Badge>
             <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-bold"
-              style={{ background: st.bg, color: st.color, border: `1px solid ${st.border}` }}>
+              style={{ background: `${st.color}0c`, color: st.color, borderColor: `${st.color}25` }}>
               {project.status}
             </Badge>
           </div>
         </div>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+
+        {/* Action buttons */}
+        <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shrink-0">
           <button onClick={e => { e.stopPropagation(); onEdit(project); }}
-            className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] flex items-center justify-center transition-colors cursor-pointer">
-            <Pencil size={11} className="text-[#8a8f98]" />
+            className="w-7 h-7 rounded-lg bg-[#0e1628]/80 hover:bg-[#1a2744]/80 border border-slate-800/40 flex items-center justify-center transition-colors cursor-pointer text-slate-400 hover:text-white">
+            <Pencil size={11} />
           </button>
           <button onClick={e => { e.stopPropagation(); onDelete(project); }}
-            className="w-7 h-7 rounded-lg bg-white/[0.04] hover:bg-[#ef4444]/10 border border-white/[0.08] flex items-center justify-center transition-colors cursor-pointer">
-            <Trash2 size={11} className="text-[#ef4444]" />
+            className="w-7 h-7 rounded-lg bg-[#0e1628]/80 hover:bg-rose-500/10 border border-slate-800/40 flex items-center justify-center transition-colors cursor-pointer text-[#8a8f98] hover:text-rose-400">
+            <Trash2 size={11} />
           </button>
         </div>
       </div>
 
       {/* Description */}
-      <p className="text-[11px] text-[#8a8f98] line-clamp-2 leading-relaxed mb-3">
+      <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed mb-4 relative z-10">
         {project.objective || 'Sin objetivo registrado.'}
       </p>
 
       {/* ISO progress */}
-      <div className="mb-3">
+      <div className="mb-4 relative z-10">
         <IsoDotLine
           contextPct={completeness}
           hasRisks={(project.riskCount || 0) > 0}
@@ -266,8 +279,8 @@ function ProjectCard({ project, isActive, onSelect, onEdit, onDelete }) {
         />
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-1 bg-slate-950/30 border border-white/5 rounded-xl p-2 divide-x divide-white/5 text-center mb-3">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-4 gap-1.5 bg-[#080c14]/40 border border-slate-800/40 rounded-xl p-2.5 divide-x divide-slate-800/40 text-center mb-4 relative z-10">
         <div>
           <p className="text-xs font-black font-mono text-cyan-400">{project.riskCount || 0}</p>
           <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">Riesgos</p>
@@ -289,12 +302,12 @@ function ProjectCard({ project, isActive, onSelect, onEdit, onDelete }) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-2 border-t border-white/[0.05]">
-        <div className="flex items-center gap-1.5 text-[10px] text-[#8a8f98] min-w-0">
-          <User size={10} className="shrink-0" />
-          <span className="truncate text-slate-400">{project.owner || 'Sin responsable'}</span>
+      <div className="flex items-center justify-between pt-2 border-t border-slate-800/40 relative z-10">
+        <div className="flex items-center gap-1.5 text-[10px] text-slate-400 min-w-0">
+          <User size={10} className="shrink-0 text-slate-500" />
+          <span className="truncate text-slate-400 font-sans">{project.owner || 'Sin responsable'}</span>
         </div>
-        <div className="flex items-center gap-1 text-[10px] text-[#8a8f98] font-mono shrink-0 select-none">
+        <div className="flex items-center gap-1 text-[10px] text-slate-500 font-mono shrink-0 select-none">
           <Calendar size={10} />
           {project.startDate ? `${project.startDate.slice(5)}` : '—'} → {project.endDate ? `${project.endDate.slice(5)}` : '—'}
         </div>
@@ -313,68 +326,67 @@ function SelectedProjectPanel({ project, onClose }) {
     project.stakeholders?.length > 0, project.technologies?.length > 0
   ].filter(Boolean).length * 20;
   const exposureLevel = Math.min(25, Math.round((project.riskCount || 0) * 1.5 + (project.criticalRiskCount || 0) * 3));
-  const exposureColor = exposureLevel >= 15 ? '#ef4444' : exposureLevel >= 10 ? '#f97316' : exposureLevel >= 5 ? '#eab308' : '#10b981';
+  const exposureColor = exposureLevel >= 15 ? '#f43f5e' : exposureLevel >= 10 ? '#f97316' : exposureLevel >= 5 ? '#f59e0b' : '#10b981';
 
   return (
-    <div className="bg-[#0b0c13]/90 border border-white/10 rounded-2xl overflow-hidden sticky top-6 shadow-xl shadow-black/25">
+    <div className="bg-[#0d1527] border border-[#1e293b]/70 rounded-[16px] overflow-hidden sticky top-6 shadow-[0_25px_45px_-12px_rgba(0,0,0,0.9)] z-10">
 
       {/* Header */}
-      <div className="px-4 py-3 border-b border-white/[0.05]"
-        style={{ borderImage: 'linear-gradient(90deg, #06b6d440, transparent) 1' }}>
-        <div className="flex items-start justify-between gap-2">
+      <div className="px-5 py-4 border-b border-slate-800/40">
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="flex items-center gap-1.5 mb-1">
-              <span className="text-[9px] font-mono font-bold text-[#06b6d4] bg-[#06b6d4]/10 border border-[#06b6d4]/20 rounded px-1.5 py-0.5">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <span className="text-[8px] font-mono font-black uppercase tracking-[0.16em] text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 rounded px-1.5 py-0.5 select-none">
                 SELECCIONADO
               </span>
             </div>
-            <h3 className="text-sm font-bold text-white truncate">{project.name}</h3>
-            <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-bold mt-1"
-              style={{ background: st.bg, color: st.color, border: `1px solid ${st.border}` }}>
+            <h3 className="text-[15px] font-extrabold text-white tracking-tight truncate" title={project.name}>{project.name}</h3>
+            <Badge variant="outline" className="text-[9px] py-0 px-1.5 font-bold mt-1.5"
+              style={{ background: `${st.color}0c`, color: st.color, borderColor: `${st.color}25` }}>
               {project.status}
             </Badge>
           </div>
           <button onClick={onClose}
-            className="w-6 h-6 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] flex items-center justify-center shrink-0 transition-colors">
-            <X size={11} className="text-[#8a8f98]" />
+            className="w-6 h-6 rounded-lg bg-white/[0.02] hover:bg-white/[0.06] border border-slate-800/50 flex items-center justify-center shrink-0 transition-colors cursor-pointer text-slate-400 hover:text-white">
+            <X size={11} />
           </button>
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-5 space-y-5">
 
         {/* Exposure score */}
-        <div className="relative rounded-xl p-4 border overflow-hidden text-center"
-          style={{ borderColor: `${exposureColor}40`, background: `linear-gradient(135deg, ${exposureColor}10, ${exposureColor}05)` }}>
-          <div className="absolute inset-0 opacity-5"
+        <div className="relative rounded-xl p-5 border overflow-hidden text-center group"
+          style={{ borderColor: `${exposureColor}25`, background: `linear-gradient(135deg, ${exposureColor}0c, transparent)` }}>
+          <div className="absolute inset-0 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 pointer-events-none"
             style={{ background: `radial-gradient(circle at 50% 50%, ${exposureColor}, transparent)` }} />
-          <p className="text-[8px] uppercase font-bold text-[#8a8f98] tracking-widest mb-1">Nivel de Exposición</p>
-          <p className="text-4xl font-black font-mono" style={{ color: exposureColor, textShadow: `0 0 20px ${exposureColor}80` }}>
+          <p className="text-[9px] uppercase font-bold text-slate-500 tracking-[0.16em] font-mono mb-1">Nivel de Exposición</p>
+          <p className="text-4xl font-black font-sans tracking-tight" style={{ color: exposureColor, textShadow: `0 0 25px ${exposureColor}40` }}>
             {exposureLevel}
           </p>
-          <p className="text-[9px] mt-0.5" style={{ color: exposureColor, opacity: 0.7 }}>
+          <p className="text-[9px] mt-1.5 font-bold uppercase tracking-wider" style={{ color: exposureColor, opacity: 0.85 }}>
             {exposureLevel >= 15 ? 'Exposición Crítica' : exposureLevel >= 10 ? 'Exposición Alta' : exposureLevel >= 5 ? 'Exposición Moderada' : 'Exposición Baja'}
           </p>
         </div>
 
-        {/* Metrics 2x2 */}
+        {/* Metrics Grid 2x2 */}
         <div className="grid grid-cols-2 gap-2">
           {[
-            { label: 'Riesgos Totales', val: project.riskCount || 0, color: '#3b82f6' },
-            { label: 'Críticos',         val: project.criticalRiskCount || 0, color: '#ef4444' },
+            { label: 'Riesgos Totales', val: project.riskCount || 0, color: '#38bdf8' },
+            { label: 'Críticos',         val: project.criticalRiskCount || 0, color: '#f43f5e' },
             { label: 'Sprints',          val: project.sprintCount || 0, color: '#10b981' },
-            { label: 'Contexto',         val: `${completeness}%`, color: '#06b6d4' },
+            { label: 'Contexto',         val: `${completeness}%`, color: '#dcf836' },
           ].map(({ label, val, color }) => (
-            <div key={label} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-2.5 text-center">
-              <p className="text-base font-black font-mono" style={{ color }}>{val}</p>
-              <p className="text-[8px] uppercase font-bold text-[#8a8f98] tracking-widest mt-0.5">{label}</p>
+            <div key={label} className="bg-[#080c14]/40 border border-slate-800/40 rounded-xl p-3 text-center transition-all duration-300 hover:bg-[#0e1628]/40 hover:border-slate-700/40">
+              <p className="text-base font-black font-sans tracking-tight" style={{ color }}>{val}</p>
+              <p className="text-[8px] uppercase font-bold text-slate-500 tracking-wider mt-1 font-mono">{label}</p>
             </div>
           ))}
         </div>
 
         {/* ISO cycle */}
-        <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-3">
-          <p className="text-[9px] uppercase font-bold text-[#8a8f98] tracking-widest mb-2">Ciclo ISO 31000</p>
+        <div className="bg-[#080c14]/30 border border-slate-800/40 rounded-xl p-3.5">
+          <p className="text-[9px] uppercase font-bold text-slate-500 tracking-[0.16em] font-mono mb-2.5">Ciclo ISO 31000</p>
           <IsoDotLine
             contextPct={completeness}
             hasRisks={(project.riskCount || 0) > 0}
@@ -383,45 +395,45 @@ function SelectedProjectPanel({ project, onClose }) {
         </div>
 
         {/* Inherent vs Residual */}
-        <div className="space-y-1.5">
-          <p className="text-[9px] uppercase font-bold text-[#8a8f98] tracking-widest">Riesgo Inherente vs Residual</p>
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-[10px]">
-              <span className="text-[#ef4444] font-bold">Inherente</span>
-              <span className="text-[10px] font-mono text-white">{exposureLevel}</span>
+        <div className="space-y-2">
+          <p className="text-[9px] uppercase font-bold text-slate-500 tracking-[0.16em] font-mono">Riesgo Inherente vs Residual</p>
+          <div className="space-y-2 bg-[#080c14]/20 border border-slate-800/30 rounded-xl p-3">
+            <div className="flex items-center justify-between text-[10px] font-sans">
+              <span className="text-[#f43f5e] font-bold">Inherente</span>
+              <span className="text-[10px] font-mono text-slate-300 font-bold">{exposureLevel}</span>
             </div>
-            <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-[#ef4444]" style={{ width: `${(exposureLevel / 25) * 100}%` }} />
+            <div className="h-1.5 bg-[#080c14]/60 rounded-full overflow-hidden border border-slate-900">
+              <div className="h-full rounded-full bg-[#f43f5e]" style={{ width: `${(exposureLevel / 25) * 100}%` }} />
             </div>
-            <div className="flex items-center justify-between text-[10px]">
+            <div className="flex items-center justify-between text-[10px] mt-2 font-sans">
               <span className="text-[#10b981] font-bold">Residual</span>
-              <span className="text-[10px] font-mono text-white">{Math.max(1, Math.round(exposureLevel * 0.4))}</span>
+              <span className="text-[10px] font-mono text-slate-300 font-bold">{Math.max(1, Math.round(exposureLevel * 0.4))}</span>
             </div>
-            <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
+            <div className="h-1.5 bg-[#080c14]/60 rounded-full overflow-hidden border border-slate-900">
               <div className="h-full rounded-full bg-[#10b981]" style={{ width: `${(exposureLevel * 0.4 / 25) * 100}%` }} />
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <div className="space-y-1.5 pt-2 border-t border-white/[0.05]">
+        <div className="space-y-2 pt-3 border-t border-slate-800/40">
           <Button variant="outline"
             onClick={() => navigate('/context')}
-            className="w-full justify-between text-[11px] border-[#06b6d4]/30 text-[#06b6d4] hover:bg-[#06b6d4]/10 h-9 bg-[#06b6d4]/05 font-bold cursor-pointer transition-colors">
-            <span className="flex items-center gap-1.5"><Layers size={12} /> Ir al Contexto</span>
-            <ChevronRight size={12} />
+            className="group w-full justify-between text-[11px] border-slate-800/60 text-[#38bdf8] hover:text-[#dcf836] hover:bg-slate-900/40 hover:border-slate-700/60 h-9 bg-slate-950/20 font-bold cursor-pointer rounded-xl transition-all">
+            <span className="flex items-center gap-2"><Layers size={12} className="text-[#38bdf8] group-hover:text-[#dcf836] transition-colors" /> Ir al Contexto</span>
+            <ChevronRight size={12} className="text-slate-500 group-hover:translate-x-0.5 transition-transform" />
           </Button>
           <Button variant="outline"
             onClick={() => navigate('/risks')}
-            className="w-full justify-between text-[11px] border-[#06b6d4]/30 text-[#06b6d4] hover:bg-[#06b6d4]/10 h-9 bg-[#06b6d4]/05 font-bold cursor-pointer transition-colors">
-            <span className="flex items-center gap-1.5"><ShieldAlert size={12} /> Identificar Riesgos</span>
-            <ChevronRight size={12} />
+            className="group w-full justify-between text-[11px] border-slate-800/60 text-[#38bdf8] hover:text-[#dcf836] hover:bg-slate-900/40 hover:border-slate-700/60 h-9 bg-slate-950/20 font-bold cursor-pointer rounded-xl transition-all">
+            <span className="flex items-center gap-2"><ShieldAlert size={12} className="text-[#38bdf8] group-hover:text-[#dcf836] transition-colors" /> Identificar Riesgos</span>
+            <ChevronRight size={12} className="text-slate-500 group-hover:translate-x-0.5 transition-transform" />
           </Button>
           <Button variant="outline"
             onClick={() => navigate('/matrix')}
-            className="w-full justify-between text-[11px] border-[#06b6d4]/30 text-[#06b6d4] hover:bg-[#06b6d4]/10 h-9 bg-[#06b6d4]/05 font-bold cursor-pointer transition-colors">
-            <span className="flex items-center gap-1.5"><LayoutGrid size={12} /> Ver Matriz de Riesgos</span>
-            <ChevronRight size={12} />
+            className="group w-full justify-between text-[11px] border-slate-800/60 text-[#38bdf8] hover:text-[#dcf836] hover:bg-slate-900/40 hover:border-slate-700/60 h-9 bg-slate-950/20 font-bold cursor-pointer rounded-xl transition-all">
+            <span className="flex items-center gap-2"><LayoutGrid size={12} className="text-[#38bdf8] group-hover:text-[#dcf836] transition-colors" /> Ver Matriz de Riesgos</span>
+            <ChevronRight size={12} className="text-slate-500 group-hover:translate-x-0.5 transition-transform" />
           </Button>
         </div>
       </div>
@@ -515,7 +527,7 @@ export default function Projects() {
   const hasFilters = search || filterStatus || filterRisk;
 
   return (
-    <div className="min-h-screen" style={{ background: '#0b0d18' }}>
+    <div className="min-h-screen" style={{ background: '#080c14' }}>
       <div className="px-6 pt-6 space-y-5">
 
         {/* ── Header ─────────────────────────────────────────────────────────── */}

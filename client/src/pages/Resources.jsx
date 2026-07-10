@@ -111,7 +111,7 @@ export default function Resources() {
                       <p className="font-mono text-xs text-primary">{r.code}</p>
                     </div>
                   </div>
-                  <Badge variant="outline" className={CATEGORY_LABELS[r.category]?.cls || 'bg-slate-500/20 text-slate-400'}>
+                  <Badge variant="outline" className={CATEGORY_LABELS[r.category]?.cls || 'hsl(var(--risk-neutral) / 0.2) hsl(var(--text-secondary))'}>
                     {CATEGORY_LABELS[r.category]?.label || r.category}
                   </Badge>
                 </div>

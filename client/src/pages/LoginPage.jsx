@@ -63,9 +63,8 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen grid"
+      className="min-h-screen grid md:grid-cols-[1fr_1fr]"
       style={{
-        gridTemplateColumns: '1fr 1fr',
         background: 'hsl(240, 15%, 4%)',
       }}
     >
@@ -73,7 +72,7 @@ export default function LoginPage() {
           LEFT PANEL — Brand & Methodology
       ════════════════════════════════════════════════ */}
       <div
-        className="hidden lg:flex flex-col justify-between relative overflow-hidden"
+        className="hidden md:flex flex-col justify-between relative overflow-hidden"
         style={{ padding: '3rem 3.5rem', borderRight: '1px solid rgba(255,255,255,0.05)' }}
       >
         {/* Subtle radial glow top-left */}
@@ -211,8 +210,8 @@ export default function LoginPage() {
           RIGHT PANEL — Login Form
       ════════════════════════════════════════════════ */}
       <div
-        className="flex flex-col justify-center items-center relative overflow-hidden"
-        style={{ padding: '3rem 2rem' }}
+        className="flex flex-col justify-center items-center relative overflow-hidden px-4 sm:px-8"
+        style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}
       >
         {/* Glow background center */}
         <div
@@ -226,7 +225,7 @@ export default function LoginPage() {
         />
 
         {/* Mobile logo */}
-        <div className="flex lg:hidden items-center gap-3 mb-8">
+        <div className="flex md:hidden items-center gap-3 mb-6 sm:mb-8">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center"
             style={{
@@ -245,21 +244,21 @@ export default function LoginPage() {
           style={{ maxWidth: 400, animation: 'fadeInScale 0.4s ease-out both' }}
         >
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <div className="flex items-center gap-2 mb-1.5">
               <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#06b6d4', boxShadow: '0 0 8px #06b6d4' }} />
               <span className="text-[10px] tracking-[0.2em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.3)' }}>
                 Acceso al sistema
               </span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-white">Iniciar sesión</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">Iniciar sesión</h1>
             <p className="text-sm mt-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
               Ingresa tus credenciales para continuar.
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={onSubmit} className="space-y-5">
+          <form onSubmit={onSubmit} className="space-y-4 sm:space-y-5">
             <div className="space-y-1.5">
               <Label
                 htmlFor="email"
@@ -375,11 +374,11 @@ export default function LoginPage() {
             }}
           >
             <Globe size={13} style={{ color: '#06b6d4' }} />
-            Conocer RiskFlow — ver landing page
+            Ver landing page
           </Link>
 
           {/* Help text */}
-          <p className="text-center text-xs mt-6" style={{ color: 'rgba(255,255,255,0.2)' }}>
+          <p className="text-center text-xs mt-4 sm:mt-6" style={{ color: 'rgba(255,255,255,0.2)' }}>
             ¿Sin cuenta? Solicita acceso al administrador de tu organización.
           </p>
 

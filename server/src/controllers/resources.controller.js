@@ -96,3 +96,28 @@ export async function unlinkResourceFromActivity(req, res) {
   await q('DELETE FROM activity_resources WHERE activityId=? AND resourceId=?', [activityId, resourceId]);
   res.status(204).end();
 }
+
+export async function getProjectActivityResources(req, res) {
+  const { projectId } = req.query;
+  if (!projectId) return res.status(400).json({ errors: ['projectId es obligatorio'] });
+
+  const rows = await q(
+    `SELECT ar.activityId, ar.resource_type, r.*
+     FROM activity_resources ar
+     JOIN resources r ON ar.resourceId = r.id
+     WHERE r.projectId = ?`,
+    [projectId],
+  );
+
+  const mappings = {};
+  for (const r of rows) {
+    const formatted = rowToApi(r);
+    const actId = r.activityId;
+    if (!mappings[actId]) {
+      mappings[actId] = [];
+    }
+    mappings[actId].push(formatted);
+  }
+
+  res.json(mappings);
+}

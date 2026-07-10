@@ -76,6 +76,7 @@ api.delete('/activities/:id',           requireAuth, requireRole('admin'),      
 // ── Resources ──────────────────────────────────────────────────────
 api.get('/resources',                    requireAuth, requireRole('risks.read'),  asyncHandler(resources.listResources));
 api.get('/resources/by-activity',        requireAuth, requireRole('risks.read'),  asyncHandler(resources.getResourceByActivity));
+api.get('/resources/mappings',            requireAuth, requireRole('risks.read'),  asyncHandler(resources.getProjectActivityResources));
 api.get('/resources/:id',              requireAuth, requireRole('risks.read'),  asyncHandler(resources.getResource));
 api.post('/resources',                  requireAuth, requireRole('risks.write'), asyncHandler(resources.createResource));
 api.delete('/resources/:id',           requireAuth, requireRole('admin'),        asyncHandler(resources.deleteResource));
